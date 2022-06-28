@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "81682639073",
+    "project_id": "tapp-70ced",
+    "storage_bucket": "tapp-70ced.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81682639073:android:406faacace9d2be59c6fa0",
+        "android_client_info": {
+          "package_name": "com.whiteSHADOW.tapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81682639073-jgiapt5pd9s89id5umkmrtmekr7m598q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9t2lv_9apCPGs2ndzmV1kiMYow0oJioE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81682639073-jgiapt5pd9s89id5umkmrtmekr7m598q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
