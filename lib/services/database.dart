@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tapp/models/tapp.dart';
+// import 'package:tapp/models/tapper.dart';
 
 class DatabaseService {
 
