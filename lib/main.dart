@@ -43,8 +43,8 @@ class BusRoute {
   // String HualienCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/HualienCounty?%24format=JSON';
   // String TaitungCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/TaitungCounty?%24format=JSON';
   // String KinmenCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/KinmenCounty?%24format=JSON';
-  String PenghuCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/PenghuCounty?%24format=JSON';
-  String LienchiangCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/LienchiangCounty?%24format=JSON';
+  // String PenghuCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/PenghuCounty?%24format=JSON';
+  // String LienchiangCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/LienchiangCounty?%24format=JSON';
 
   
   Future<void> getData() async {
@@ -666,12 +666,6 @@ class BusRoute {
 
   }
 }
-
-
-
-
-
-
 
 Future createBusInfo({ required String doc_name, required String bus_name, required String place, required String way, required String route_map_image_Url}) async {
   await FirebaseFirestore.instance.collection('bus').doc(doc_name).set({
