@@ -26,7 +26,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : Scaffold(
+    return loading ? Loading() : Scaffold(//
       backgroundColor: Color.fromARGB(255, 203, 203, 203),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
@@ -110,7 +110,6 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-              
               SizedBox(height: 10.0),
               Text(
                 error,

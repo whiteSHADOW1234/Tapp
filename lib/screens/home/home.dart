@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter/src/foundation/key.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 // import 'package:provider/provider.dart';
-import 'package:tapp/models/tabbar_widget.dart';
+// import 'package:tapp/models/tabbar_widget.dart';
 // import 'package:tapp/models/tapp.dart';
-import 'package:tapp/models/tapp_usergroup.dart';
+// import 'package:tapp/models/tapp_usergroup.dart';
 // import 'package:tapp/services/auth.dart';
 // import 'package:tapp/services/database.dart';
 
@@ -13,16 +15,58 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
+class GetData { 
+  final String bus_name, city, way;
+   GetData({required this.bus_name, required this.city, required this.way});
+}
 
+  CollectionReference _busRoutes = FirebaseFirestore.instance.collection('bus');
+
+  // List<GetData> _getDataFromSnapshot(QuerySnapshot snapshot) {
+  //   return snapshot.docs.map((doc) {
+  //     return GetData(
+  //       bus_name: doc.get('Bus_name') ?? '',
+  //       city: doc.get('City') ?? '',
+  //       way: doc.get('Way') ?? '',
+  //     );
+  //   }).toList();
+  // }
+    
+  // Stream<List<GetData>> get dbData {
+  //   return _busRoutes.snapshots().map(_getDataFromSnapshot);
+  // }
 class _HomeState extends State<Home> {
   String searchText = String.fromCharCodes(Runes('\u641C'+'\u5C0B'+'\u516C'+'\u8ECA'+'\u8DEF'+'\u7DDA'));
   var busRunesMessage = new Runes('\u516C'+'\u8ECA');
   int group = 0;
+  String key = '   ';
   // var TrainRunesMessage = new Runes('\u706B'+'\u8ECA');
   // var IntercityBusRunesMessage = new Runes('\u5BA2'+'\u904B');
   // var HighSpeedTrainRunesMessage = new Runes('\u9AD8'+'\u9435');
 
   // final AuthService _auth = AuthService();
+
+      List<GetData> _getDataFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return GetData(
+        bus_name: doc.get('Bus_name') ?? '',
+        city: doc.get('City') ?? '',
+        way: doc.get('Way') ?? '',
+      );
+    }).toList();
+  // void getCasesDetailList(String query) async{
+  // }
+    // List<DocumentSnapshot> documentList =  (await FirebaseFirestore.instance
+    //     .collection("bus")
+    //     .where("caseSearch", arrayContains: query)
+    //     // .collection("caseSearch")
+    //     // .where("caseNumber", arrayContains: query)
+    //     .snapshots())
+    // .documents;
+
+  }
+
+
 
 
   static const historyLength = 5;
@@ -33,9 +77,7 @@ class _HomeState extends State<Home> {
 
   late String selectedTerm = searchText;
 
-  List<String> filterSearchTerms({
-    required String filter,
-  }) {
+  List<String> filterSearchTerms({required String filter,}) {
     if (filter != null && filter.isNotEmpty) {
       return _searchHistory.reversed
           .where((term) => term.startsWith(filter))
@@ -52,6 +94,7 @@ class _HomeState extends State<Home> {
     }
 
     _searchHistory.add(term);
+
     if (_searchHistory.length > historyLength) {
       _searchHistory.removeRange(0, _searchHistory.length - historyLength);
     }
@@ -69,127 +112,170 @@ class _HomeState extends State<Home> {
     addSearchTerm(term);
   }
 
-  late FloatingSearchBarController controller;
+  // late FloatingSearchBarController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = FloatingSearchBarController();
+    // controller = FloatingSearchBarController();
     filteredSearchHistory = filterSearchTerms(filter: '');
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    // controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FloatingSearchBar(
-        controller: controller,
-        body: FloatingSearchBarScrollNotifier(
-          child: SearchResultsListView(
-            searchTerm: selectedTerm,
-          ),
-        ),
-        transition: CircularFloatingSearchBarTransition(),
-        physics: BouncingScrollPhysics(),
-        title: Text(
-          selectedTerm,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        hint: searchText,
-        actions: [
-          FloatingSearchBarAction.searchToClear(),
-        ],
-        onQueryChanged: (query) {
-          setState(() {
-            filteredSearchHistory = filterSearchTerms(filter: query);
-          });
-        },
-        onSubmitted: (query) {
-          setState(() {
-            addSearchTerm(query);
-            selectedTerm = query;
-          });
-          controller.close();
-        },
-        builder: (context, transition) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Material(
-              color: Colors.white,
-              elevation: 4,
-              child: Builder(
-                builder: (context) {
-                  if (filteredSearchHistory.isEmpty &&
-                      controller.query.isEmpty) {
-                    return Container(
-                      height: 56,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Start searching',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    );
-                  } else if (filteredSearchHistory.isEmpty) {
-                    return ListTile(
-                      title: Text(controller.query),
-                      leading: const Icon(Icons.search),
-                      onTap: () {
-                        setState(() {
-                          addSearchTerm(controller.query);
-                          selectedTerm = controller.query;
-                        });
-                        controller.close();
-                      },
-                    );
-                  } else {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: filteredSearchHistory
-                          .map(
-                            (term) => ListTile(
-                              title: Text(
-                                term,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              leading: const Icon(Icons.history),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  setState(() {
-                                    deleteSearchTerm(term);
-                                  });
-                                },
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  putSearchTermFirst(term);
-                                  selectedTerm = term;
-                                });
-                                controller.close();
-                              },
-                            ),
-                          )
-                          .toList(),
-                    );
-                  }
-                },
+    return Builder(
+      builder: (context) {
+        return Scaffold(
+          body: FloatingSearchBar(
+            height: 40,
+            width: 370,
+            // controller: controller,
+            body: FloatingSearchBarScrollNotifier(
+              child: SearchResultsListView(
+                searchTerm: selectedTerm,
               ),
             ),
-          );
-        },
-      ),
+            transition: CircularFloatingSearchBarTransition(),
+            physics: BouncingScrollPhysics(),
+            title: Text(
+              selectedTerm,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            hint: searchText,
+            actions: [
+              FloatingSearchBarAction.searchToClear(),
+            ],
+            onQueryChanged: (query) {
+
+              // getCasesDetailList(query);
+              // var datalist = Provider.of<List<GetData>>(context); //Consumer
+              // datalist = datalist.where((_search) {
+              //   return  _search.bus_name.toString().contains(key);//_search.bus_name.toLowerCase().contains(key) ||
+              // }).toList();
+              setState(() {key = query;});
+              print(query);
+
+              // setState(() {
+              //   filteredSearchHistory = filterSearchTerms(filter: query);
+              // });
+            },
+            onSubmitted: (query) {
+              setState(() {
+                addSearchTerm(query);
+                selectedTerm = query;
+              });
+              // controller.close();
+            },
+            builder: (context, transition) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Material(
+                  color: Colors.white,
+                  elevation: 4,
+                  child: Builder(
+                    builder: (context) {
+                      return StreamBuilder<QuerySnapshot>(
+                        stream: _busRoutes.snapshots().asBroadcastStream(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return ListView(
+                            shrinkWrap: true,
+                            children: [
+                              for (var doc in snapshot.data!.docs)
+                                if (doc.get('Bus_name').toString().contains(key)) 
+                                InkWell(
+                                  child: ListTile(
+                                    title: Text(doc.get('Bus_name')),
+                                    subtitle: Text(doc.get('Way')),
+                                    trailing: Text(doc.get('City')),
+                                  ),
+                                  onTap: (){}
+                                )
+                              ],
+                            );
+                          }
+                        );
+                      // if (filteredSearchHistory.isEmpty && controller.query.isEmpty) {
+                      //   return Container(
+                      //     height: 56,
+                      //     width: double.infinity,
+                      //     alignment: Alignment.center,
+                      //     child: Text(
+                      //       'Start searching',
+                      //       maxLines: 1,
+                      //       overflow: TextOverflow.ellipsis,
+                      //       style: Theme.of(context).textTheme.caption,
+                      //     ),
+                      //   );
+                      // } else if (filteredSearchHistory.isEmpty) {
+                      //   return ListTile(
+                      //     title: Text(controller.query),
+                      //     leading: const Icon(Icons.search),
+                      //     onTap: () {
+                      //       setState(() {
+                      //         addSearchTerm(controller.query);
+                      //         selectedTerm = controller.query;
+                      //         // print(selectedTerm);
+                      //       });
+                      //       controller.close();
+                      //     },
+                      //   );
+                      // } else {
+                        // return Column(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   children: filteredSearchHistory
+                        //       .map(
+                        //         (term) => ListTile(
+                        //           title: Text(
+                        //             term+" city name" + "\n 123456",
+                        //             maxLines: 2,
+                        //             overflow: TextOverflow.ellipsis,
+                        //           ),
+                        //           leading: const Icon(Icons.history),
+                        //           trailing: IconButton(
+                        //             icon: const Icon(Icons.clear),
+                        //             onPressed: () {
+                        //               setState(() {
+                        //                 deleteSearchTerm(term);
+                        //               });
+                        //             },
+                        //           ),
+                        //           onTap: () {
+                        //             setState(() {
+                        //               putSearchTermFirst(term);
+                        //               selectedTerm = term;
+                        //               print(selectedTerm);
+                        //             });
+                        //             // controller.close();
+                        //           },
+                        //         ),
+                        //       )
+                        //       .toList(),
+                        // );
+                      // }
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      }
     );
   }
 }
+
+
 
 class SearchResultsListView extends StatelessWidget {
   final String searchTerm;
@@ -208,7 +294,7 @@ class SearchResultsListView extends StatelessWidget {
           children: [
             Icon(
               Icons.search,
-              size: 64,
+              size: 60,
             ),
             Text(
               'Start searching',
@@ -222,6 +308,17 @@ class SearchResultsListView extends StatelessWidget {
     final fsb = FloatingSearchBar.of(context);
 
     return Scaffold(
+      appBar:AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.purple, Colors.blue],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
+            ),
+          ),
+        ),
+      ),
       body: Center(
         child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -246,6 +343,10 @@ class SearchResultsListView extends StatelessWidget {
     // );
   }
 }
+
+
+
+
 
 
 

@@ -15,36 +15,34 @@ void main() async {
    WidgetsFlutterBinding.ensureInitialized();
    await Firebase.initializeApp();
   //  BusRoute().getData();
-  //  createBusInfo(bus_name: '644',place: 'Taipei', way: 'lalala >>> ohhhh');
-  //  createBusInfo(bus_name: '645',place: 'Taipei', way: 'lalala >>> ohhhh');
    runApp(MyApp());
 }
 
 
 class BusRoute {
 
-  //  String TaipeiUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Taipei?%24format=JSON';
-  //  String NewTaipeiUrl ='https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/NewTaipei?%24format=JSON';
-  //  String TaoyuanUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Taoyuan?%24format=JSON';
-  //  String TaichungUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Taichung?%24format=JSON';
-  //  String TainanUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Tainan?%24format=JSON';
-  //  String KaohsiungUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Kaohsiung?%24format=JSON';
-  // String KeelungUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Keelung?%24format=JSON';
-  // String HsinchuUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Hsinchu?%24format=JSON';
-  // String HsinchuCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/HsinchuCounty?%24format=JSON';
-  // String MiaoliCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/MiaoliCounty?%24format=JSON';
-  // String ChanghuaCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/ChanghuaCounty?%24format=JSON';
-  // String NantouCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/NantouCounty?%24format=JSON';
-  // String YunlinCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/YunlinCounty?%24format=JSON';
-  // String ChiayiCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/ChiayiCounty?%24format=JSON';
-  // String ChiayiUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Chiayi?%24format=JSON';
-  // String PingtungCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/PingtungCounty?%24format=JSON';
-  // String YilanCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/YilanCounty?%24format=JSON';
-  // String HualienCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/HualienCounty?%24format=JSON';
-  // String TaitungCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/TaitungCounty?%24format=JSON';
-  // String KinmenCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/KinmenCounty?%24format=JSON';
-  // String PenghuCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/PenghuCounty?%24format=JSON';
-  // String LienchiangCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/LienchiangCounty?%24format=JSON';
+  String TaipeiUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Taipei?%24format=JSON';
+  String NewTaipeiUrl ='https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/NewTaipei?%24format=JSON';
+  String TaoyuanUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Taoyuan?%24format=JSON';
+  String TaichungUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Taichung?%24format=JSON';
+  String TainanUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Tainan?%24format=JSON';
+  String KaohsiungUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Kaohsiung?%24format=JSON';
+  String KeelungUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Keelung?%24format=JSON';
+  String HsinchuUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Hsinchu?%24format=JSON';
+  String HsinchuCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/HsinchuCounty?%24format=JSON';
+  String MiaoliCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/MiaoliCounty?%24format=JSON';
+  String ChanghuaCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/ChanghuaCounty?%24format=JSON';
+  String NantouCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/NantouCounty?%24format=JSON';
+  String YunlinCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/YunlinCounty?%24format=JSON';
+  String ChiayiCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/ChiayiCounty?%24format=JSON';
+  String ChiayiUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/Chiayi?%24format=JSON';
+  String PingtungCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/PingtungCounty?%24format=JSON';
+  String YilanCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/YilanCounty?%24format=JSON';
+  String HualienCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/HualienCounty?%24format=JSON';
+  String TaitungCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/TaitungCounty?%24format=JSON';
+  String KinmenCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/KinmenCounty?%24format=JSON';
+  String PenghuCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/PenghuCounty?%24format=JSON';
+  String LienchiangCountyUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/LienchiangCounty?%24format=JSON';
 
   
   Future<void> getData() async {
@@ -61,7 +59,7 @@ class BusRoute {
     //       });
     //       var jsonData = json.decode(response.body);
 
-    //       for (var i = 0; i <396; i++) {
+    //       for (var i = 0; i <395; i++) {
     //         print(jsonData[i]['RouteName']['Zh_tw']+" "+jsonData[i]['DepartureStopNameZh']+" "+jsonData[i]['DestinationStopNameZh'] + " " + jsonData[i]['RouteMapImageUrl']);
     //         createBusInfo(doc_name:'a'+i.toString(),bus_name: jsonData[i]['RouteName']['Zh_tw'],place:"Taipei" , way: jsonData[i]['DepartureStopNameZh']+" >>> "+jsonData[i]['DestinationStopNameZh'], route_map_image_Url: jsonData[i]['RouteMapImageUrl']);
     //       }
@@ -667,20 +665,34 @@ class BusRoute {
   }
 }
 
+
+
 Future createBusInfo({ required String doc_name, required String bus_name, required String place, required String way, required String route_map_image_Url}) async {
   await FirebaseFirestore.instance.collection('bus').doc(doc_name).set({
     'Bus_name': bus_name,
     'City': place,
     'Way': way,
     'Route_map_image_Url': route_map_image_Url,
+    "caseSearch": setSearchParam(bus_name),
   });
-
+}
+setSearchParam(String caseNumber) {
+  List<String> caseSearchList = [];
+  String temp = "";
+  for (int i = 0; i < caseNumber.length; i++) {
+    temp = temp + caseNumber[i];
+    caseSearchList.add(temp);
+  }
+  return caseSearchList;
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // return MaterialApp(
+    //   home: Wrapper(),
+    // );
     return StreamProvider<User1?>.value(
       catchError: (_, __) => null, 
       value: AuthService().user,
