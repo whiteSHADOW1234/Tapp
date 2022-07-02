@@ -14,11 +14,10 @@ class DatabaseService {
       'user_account_name': user_account_name,
       'user_email': user_email,
       'user_password': user_password,
-      // 'strength': strength,
     });
   }
 
-  // brew list from snapshot
+  // tapp list from snapshot
 // List <Tapp> _tappListFromSnapshot(QuerySnapshot snapshot){
 //      return snapshot.docs.map((doc){
 //        return Tapp(
@@ -28,7 +27,7 @@ class DatabaseService {
 //      }).toList();
 //   }
 
-  // get brews stream
+  // get tapps stream
   // Stream<List<Tapp>> get tapps {
   //   return tappCollection.snapshots()
   //     .map(_tappListFromSnapshot);

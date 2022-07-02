@@ -1,20 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:tapp/screens/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tapp/screens/wrapper.dart';
 import 'package:tapp/services/auth.dart';
 import 'models/user.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const kAndroidUserAgent =
-    'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
+const kAndroidUserAgent = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
 
 void main() async {
    WidgetsFlutterBinding.ensureInitialized();
    await Firebase.initializeApp();
-  //  BusRoute().getData();
+  //  BusRoute().getData();//Note: this code must be run seperately or firebase and PC will not work as expected
    runApp(MyApp());
 }
 
@@ -676,6 +675,9 @@ Future createBusInfo({ required String doc_name, required String bus_name, requi
     "caseSearch": setSearchParam(bus_name),
   });
 }
+
+
+
 setSearchParam(String caseNumber) {
   List<String> caseSearchList = [];
   String temp = "";
@@ -687,12 +689,8 @@ setSearchParam(String caseNumber) {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   home: Wrapper(),
-    // );
     return StreamProvider<User1?>.value(
       catchError: (_, __) => null, 
       value: AuthService().user,

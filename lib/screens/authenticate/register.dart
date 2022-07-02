@@ -102,11 +102,10 @@ class _RegisterState extends State<Register> {
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 0, 0, 0),
-                            
-                            ),
                           ),
-                        ),  
-                      ),
+                        ),
+                      ),  
+                    ),
                   ],
                 ),
               ),
