@@ -4,16 +4,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 const kAndroidUserAgent = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
-class SendBusResult{
-  List<String> goData=[];
-  List<String> backData=[];
-  SendBusResult({required this.goData,required this.backData});
-  // List<String> goBusStop = [];
-  // List<String> goTimeout = [];
-  // List<String> backBusStop = [];
-  // List<String> backTimeout = [];
-  // SendBusResult({required this.goBusStop,required this.goTimeout,required this.backBusStop,required this.backTimeout});
-}
+// class SendBusResult{
+//   List<String> goData=[];
+//   List<String> backData=[];
+//   SendBusResult({required this.goData,required this.backData});
+//   // List<String> goBusStop = [];
+//   // List<String> goTimeout = [];
+//   // List<String> backBusStop = [];
+//   // List<String> backTimeout = [];
+//   // SendBusResult({required this.goBusStop,required this.goTimeout,required this.backBusStop,required this.backTimeout});
+// }
 class BusApiService {
   List<String> GoData=[];
   List<String> BackData=[];
@@ -137,66 +137,68 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
                 itemCount: godata.length,
                 itemBuilder: (context, index) {
                   var dataAim = godata[index].indexOf("  ");
-                  return Card(
-                    child: ListTile(
-                      leading: IconButton(
-                        icon: Icon(
-                          Icons.favorite,
-                          color: color1,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            if (color1 == Colors.grey) {
-                              color1 = color2;
-                            } else {
-                              color1 = Colors.grey;
-                            }
-                          });
-                        },
-                      ),
-                      title: Text(
-                          godata[index].substring(0,dataAim+1),
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        trailing: Text(
-                          godata[index].substring(dataAim+1) == "" ? "No Data" : godata[index].substring(dataAim+1),
-                          style: TextStyle(fontSize: 20),
-                        ),
-                    ),
-                  );
+                  return MyListButton(title: godata[index],seperate: dataAim);
+                  // return Card(
+                  //   child: ListTile(
+                  //     leading: IconButton(
+                  //       icon: Icon(
+                  //         Icons.favorite,
+                  //         color: color1,
+                  //       ),
+                  //       onPressed: () {
+                  //         setState(() {
+                  //           if (color1 == Colors.grey) {
+                  //             color1 = color2;
+                  //           } else {
+                  //             color1 = Colors.grey;
+                  //           }
+                  //         });
+                  //       },
+                  //     ),
+                  //     title: Text(
+                  //         godata[index].substring(0,dataAim+1),
+                  //         style: TextStyle(fontSize: 20),
+                  //       ),
+                  //       trailing: Text(
+                  //         godata[index].substring(dataAim+1) == "" ? "No Data" : godata[index].substring(dataAim+1),
+                  //         style: TextStyle(fontSize: 20),
+                  //       ),
+                  //   ),
+                  // );
                 },
               ),
               backdata.length == 0 ? Center(child: Text('No Data')) : ListView.builder(
                 itemCount: backdata.length,
                 itemBuilder: (context, index) {
-                  var data = backdata[index].split(" ");
-                  return Card(
-                    child: ListTile(
-                      leading: IconButton(
-                        icon: Icon(
-                          Icons.favorite,
-                          color: color1,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            if (color1 == Colors.grey) {
-                              color1 = Colors.red;
-                            } else {
-                              color1 = Colors.grey;
-                            }
-                          });
-                        },
-                      ),
-                      title: Text(
-                        data[0],
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      trailing: Text(
-                        data[1],
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  );
+                  var dataAim = backdata[index].indexOf("  ");
+                  return MyListButton(title: backdata[index],seperate: dataAim);
+                  // return Card(
+                  //   child: ListTile(
+                  //     leading: IconButton(
+                  //       icon: Icon(
+                  //         Icons.favorite,
+                  //         color: color1,
+                  //       ),
+                  //       onPressed: () {
+                  //         setState(() {
+                  //           if (color1 == Colors.grey) {
+                  //             color1 = Colors.red;
+                  //           } else {
+                  //             color1 = Colors.grey;
+                  //           }
+                  //         });
+                  //       },
+                  //     ),
+                  //     title: Text(
+                  //       data[0],
+                  //       style: TextStyle(fontSize: 20),
+                  //     ),
+                  //     trailing: Text(
+                  //       data[1],
+                  //       style: TextStyle(fontSize: 20),
+                  //     ),
+                  //   ),
+                  // );
                 },
               ),
             ],
@@ -211,6 +213,48 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
   bool get wantKeepAlive => true;
 }
 
+
+class MyListButton extends StatefulWidget {
+  final String title;
+  final int seperate;
+  MyListButton({Key? key, required this.title, required this.seperate}) : super(key: key);
+  @override
+  _MyListButtonState createState() => _MyListButtonState();
+}
+
+class _MyListButtonState extends State<MyListButton> {
+   // Default to non pressed
+  bool pressAttention = false;
+  Color color1 = Colors.grey;
+  Color color2 = Colors.red;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: IconButton(
+          icon: Icon(
+            Icons.favorite,
+            color: pressAttention ? color2 : color1,
+          ),
+          onPressed: () {
+            setState(() {
+              pressAttention = !pressAttention;
+              print(widget.title);
+            });
+          },
+        ),
+        title: Text(
+            widget.title.substring(0,widget.seperate+1),
+            style: TextStyle(fontSize: 20),
+          ),
+          trailing: Text(
+            widget.title.substring(widget.seperate+1) == "" ? "No Data" : widget.title.substring(widget.seperate+1),
+            style: TextStyle(fontSize: 20),
+          ),
+      ),
+    );
+  }
+}
 
 
 

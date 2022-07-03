@@ -2,15 +2,7 @@
     package="com.example.tapp">
    <application
         android:label="tapp"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:allowBackup="true"
-        android:hardwareAccelerated="true"
-        android:largeHeap="true"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:name="${applicationName}">
         <activity
             android:name=".MainActivity"
             android:exported="true"
