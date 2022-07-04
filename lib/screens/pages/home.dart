@@ -321,11 +321,14 @@ class BackGroundView extends StatelessWidget {
                                 ),
                               ),
                               child: Center(
-                                child: Text(String.fromCharCodes(titleRunesMessage),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(255, 0, 0, 0))),
+                                child: Text(
+                                  String.fromCharCodes(titleRunesMessage),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 0, 0, 0)
+                                  )
+                                ),
                               ),
                             ),
                             shape: RoundedRectangleBorder(
