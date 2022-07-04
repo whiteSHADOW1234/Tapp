@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:tapp/models/bus.dart';
+import 'package:tapp/screens/subpages/FavoriteScreen.dart';
 import 'package:tapp/screens/subpages/bus_result.dart';
 
+var titleRunesMessage = Runes('\u6211' + '\u7684' +'\u6700' + '\u611B');
 class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
@@ -292,10 +294,54 @@ class BackGroundView extends StatelessWidget {
          builder: (group){
             // if (group == 0) {
               return Center(
-                child: Text(
-                  'Search your favorite bus \nand create a group now',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        //change to favorite screen 
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FavoritePage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10.0),
+                        child: Center(
+                          child: Card(
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              height: 100,
+                              width: 450,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("asset/mount.jpg"),
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(String.fromCharCodes(titleRunesMessage),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 0, 0, 0))),
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  )
+                
+                // child: Text(
+                //   'Search your favorite bus \nand create a group now',
+                //   style: Theme.of(context).textTheme.headline6,
+                // ),
               );
             // } else {
             //   return ListView(

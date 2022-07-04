@@ -696,7 +696,7 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       initialData: null,
       child: MaterialApp(
-        // theme: new ThemeData(scaffoldBackgroundColor: Color.fromARGB(255, 88, 76, 76)),
+        theme: ThemeData(scaffoldBackgroundColor: Color.fromARGB(255, 195, 135, 135)),
         home: Wrapper(),
       ),
     );
