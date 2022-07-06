@@ -1,6 +1,7 @@
 class Bus{
-  final String bus_name; 
+  final String busName; 
   final String city; 
   final String way;
-  Bus({required this.bus_name,required this.city,required this.way});
+
+  Bus({required this.busName,required this.city,required this.way});
 }

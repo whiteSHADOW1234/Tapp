@@ -21,7 +21,6 @@ class Wrapper extends StatelessWidget {
     //     body: BottomNavigationController(),
     //   ),
     // );
-      // return Home();
     }
   }
 }
@@ -35,10 +34,9 @@ class BottomNavigationController extends StatefulWidget {
       _BottomNavigationControllerState();
 }
 
-class _BottomNavigationControllerState
-    extends State<BottomNavigationController> {
-  //目前選擇頁索引值
-  int _currentIndex = 0; //預設值
+class _BottomNavigationControllerState extends State<BottomNavigationController> {
+  
+  int _currentIndex = 0; 
   final pages = [Chat(),Home(),Posts(),Location(), Account()];
 
   @override
@@ -55,14 +53,14 @@ class _BottomNavigationControllerState
           BottomNavigationBarItem(icon: Icon(Icons.location_on,color: Colors.blue,size: 35),label: 'Location'),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle,color: Colors.blue,size: 35),label: 'Account'),
         ],
-        currentIndex: _currentIndex, //目前選擇頁索引值
-        fixedColor: Colors.amber, //選擇頁顏色
-        onTap: _onItemClick, //BottomNavigationBar 按下處理事件
+        currentIndex: _currentIndex, 
+        fixedColor: Colors.amber, 
+        onTap: _onItemClick, 
       ),
     );
   }
 
-  //BottomNavigationBar 按下處理事件，更新設定當下索引值
+  
   void _onItemClick(int index) {
     setState(() {
       _currentIndex = index;

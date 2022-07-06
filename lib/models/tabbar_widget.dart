@@ -24,28 +24,6 @@ class TabBarWidget extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: SearchBar(),
-          //   title: Container(
-          //     width: double.infinity,
-          //     height: 40,
-          //     decoration: BoxDecoration(
-          //         color: Colors.white, borderRadius: BorderRadius.circular(5)
-          //     ),
-          //     child: Center(
-          //       child: TextField(
-          //         decoration: InputDecoration(
-          //               prefixIcon: Icon(Icons.search),
-          //               suffixIcon: IconButton(
-          //                 icon: Icon(Icons.clear),
-          //                 onPressed: () {
-          //                   /* Clear the search field */
-          //                 },
-          //               ),
-          //               hintText: searchtext,
-          //               border: InputBorder.none
-          //             ),
-          //       ),
-          //     ),
-          // ),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -79,8 +57,6 @@ class TabBarWidget extends StatelessWidget {
         ),
       );
 }
-
-
 
 class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
@@ -265,53 +241,3 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 }
-
-
-
-
-
-
-
-
-// class SearchResultsListView extends StatelessWidget {
-//   final String searchTerm;
-
-//   const SearchResultsListView({
-//     Key? key,
-//     required this.searchTerm,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (searchTerm == null) {
-//       return Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Icon(
-//               Icons.search,
-//               size: 64,
-//             ),
-//             Text(
-//               'Start searching',
-//               style: Theme.of(context).textTheme.headline5,
-//             )
-//           ],
-//         ),
-//       );
-//     }
-
-//     final fsb = FloatingSearchBar.of(context);
-
-//     return ListView(
-//       padding: EdgeInsets.only(top: 30),
-//       children: List.generate(
-//         50,
-//         (index) => ListTile(
-//           title: Text('$searchTerm search result'),
-//           subtitle: Text(index.toString()),
-//         ),
-//       ),
-//     );
-//   }
-// }

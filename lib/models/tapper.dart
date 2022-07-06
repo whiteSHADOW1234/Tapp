@@ -1,9 +1,8 @@
-class Tapper {
+// class Tapper {
 
-  late final String user_account_name;
-  late final String user_password;
-  // late final int strength;
+//   late final String userAccountName;
+//   late final String userPassword;
 
-  Tapper({ required this.user_account_name, required this.user_password });
+//   Tapper({ required this.userAccountName, required this.userPassword });
 
-}
+// }

@@ -40,8 +40,6 @@ class _HomeState extends State<Home> {
   }
 
 
-
-
   static const historyLength = 5;
 
   List<String> _searchHistory = [];
@@ -221,7 +219,7 @@ class _HomeState extends State<Home> {
                                         context,
                                         new MaterialPageRoute(
                                           builder: (context) => BusPage(
-                                            bus: Bus(bus_name: '${doc.get('Bus_name')}', way: '${doc.get('Way')}', city: '${doc.get('City')}'),
+                                            bus: Bus(busName: '${doc.get('Bus_name')}', way: '${doc.get('Way')}', city: '${doc.get('City')}'),
                                           ),
                                         ),
                                       );

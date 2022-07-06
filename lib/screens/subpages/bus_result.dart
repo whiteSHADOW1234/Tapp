@@ -1,3 +1,9 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+// import 'package:tapp/models/favorite_bus.dart';
+import 'package:tapp/models/user.dart';
+import 'package:tapp/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:tapp/models/bus.dart';
 import 'dart:convert';
@@ -68,7 +74,7 @@ class BusPage extends StatefulWidget {
   final Bus bus;
   BusPage({Key? key, required this.bus}) : super(key: key);
   
-  get bus_name => bus.bus_name;
+  get bus_name => bus.busName;
   get city => bus.city;
   get way => bus.way;
   
@@ -140,14 +146,14 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
                 itemCount: godata.length,
                 itemBuilder: (context, index) {
                   var dataAim = godata[index].indexOf("  ");
-                  return MyListButton(title: godata[index],seperate: dataAim);
+                  return MyListButton(busName: widget.bus_name, city: widget.city, title: godata[index],seperate: dataAim);
                 },
               ),
               backdata.isEmpty ? const Center(child: Text('No Data')) : ListView.builder(
                 itemCount: backdata.length,
                 itemBuilder: (context, index) {
                   var dataAim = backdata[index].indexOf("  ");
-                  return MyListButton(title: backdata[index],seperate: dataAim);
+                  return MyListButton(busName: widget.bus_name, city: widget.city, title: backdata[index],seperate: dataAim);
                 },
               ),
             ],
@@ -166,7 +172,9 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
 class MyListButton extends StatefulWidget {
   final String title;
   final int seperate;
-  MyListButton({Key? key, required this.title, required this.seperate}) : super(key: key);
+  final String busName;
+  final String city;
+  MyListButton({Key? key, required this.title, required this.seperate, required this.busName, required this.city}) : super(key: key);
   @override
   _MyListButtonState createState() => _MyListButtonState();
 }
@@ -178,6 +186,7 @@ class _MyListButtonState extends State<MyListButton> {
   Color color2 = Colors.red;
   @override
   Widget build(BuildContext context) {
+    User1 user = Provider.of<User1>(context);
     return Card(
       child: ListTile(
         leading: IconButton(
@@ -187,8 +196,11 @@ class _MyListButtonState extends State<MyListButton> {
           ),
           onPressed: () {
             setState(() {
+                DatabaseService(uid: user.uid).addFavoriteBus(widget.busName, widget.city, widget.title.substring(0, widget.seperate+1));
+              // createFavoriteBus(busName: widget.busName, city: widget.city, title: widget.title);
               pressAttention = !pressAttention;
               print(widget.title);
+              print(user.uid);
             });
           },
         ),
