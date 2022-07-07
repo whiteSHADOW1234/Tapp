@@ -22,25 +22,26 @@ class DatabaseService {
   }
 
 
-  // Future<void> updateFavoriteData(String cityName,String busRoute, String busStopName) async {
-  //   return await tappCollection.doc(uid).update({
-  //     'FavoriteBus': FieldValue.arrayUnion([FavoriteBus(cityName: cityName, busRoute: busRoute, busStopName: busStopName)])
-  //   });
-  // }
-
-
-
-
-  // Future<void> updateGroupData(String groupName,List<String> favoriteIndexsWithOrder) async {
-  //   return await tappCollection.doc(uid).update({
-  //     'Groups': FieldValue.arrayUnion([Group(groupName: groupName, favoriteIndexsWithOrder: favoriteIndexsWithOrder)])
-  //   });
-  // }
-
   Future<List<dynamic>> getBusList() async {
   var firestore = FirebaseFirestore.instance;
 
   return tappCollection.get().then((QuerySnapshot snapshot) {
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs.map((DocumentSnapshot doc) {
+        return doc.data();
+      }).toList();
+    } else {
+      return [];
+    }
+    });
+  }
+
+
+
+
+  Future<List<dynamic>> getGroupList() async {
+  
+  return FirebaseFirestore.instance.collection('tappers').get().then((QuerySnapshot snapshot) {
     if (snapshot.docs.isNotEmpty) {
       return snapshot.docs.map((DocumentSnapshot doc) {
         return doc.data();
@@ -80,6 +81,29 @@ class DatabaseService {
       'FavoriteBus': FieldValue.arrayRemove([title])
     });
   }
+
+  void addGroupBus(String groupName, String title) {
+    tappCollection.doc(uid).update({
+      'Groups': FieldValue.arrayUnion([groupName + "//" + title])
+    });
+
+  }
+
+  void deleteGroup(String groupName) {}
+
+  void addGroupElement(busName, city, String string) {
+    List<Map<String, String>> myData = [{'Elements' : busName + " " + city + " " + string}];
+    tappCollection.doc(uid).update({
+      "Group Stuff.0.Elements" :  FieldValue.arrayUnion(myData)
+    });
+  }
+
+
+  // void deleteGroupBus(String title) {
+  //   tappCollection.doc(uid).update({
+  //     'Groups': FieldValue.arrayRemove([title])
+  //   });
+  // }
 
 
 

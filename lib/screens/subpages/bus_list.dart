@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tapp/models/favorite_bus.dart';
 import 'package:tapp/models/user.dart';
 import 'package:tapp/services/database.dart';
-
-
 
 class BusList extends StatefulWidget {
 
@@ -21,11 +18,10 @@ class _BusListState extends State<BusList> {
     final buses = Provider.of<List<FavoriteBus>>(context);
 
     return FutureBuilder<dynamic>(
-      // initialData: [],
       future: DatabaseService(uid: user.uid).getBusList(), 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
@@ -33,43 +29,11 @@ class _BusListState extends State<BusList> {
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
               return BusTile(favoriteBus: snapshot.data[index]['FavoriteBus']);
-              // return ListTile(
-                // leading: IconButton(
-                //   icon: Icon(
-                //     Icons.favorite,
-                //     color: Colors.red,
-                //   ),
-                //   onPressed: () {
-                //     color: Colors.grey;
-                //     DatabaseService(uid: user.uid).deleteFavoriteBus(snapshot.data[index].toString());
-                //   },
-                // ),
-              //   title: Text(
-              //     snapshot.data[index]['FavoriteBus'].toString(),
-              //   ),
-              // );
             },
           );
         }
       },
       );
-
-    // return ListView.builder(
-    //   itemCount: buses.length,
-    //   itemBuilder: (context, index) {
-    //     // return BusTile(favorite_bus: buses[index],);
-    //     return ListTile(
-    //       title: Text(buses[index].busStopName),
-    //       subtitle: Text(buses[index].busRoute),
-    //       trailing: IconButton(
-    //         icon: Icon(Icons.delete),
-    //         onPressed: () {
-    //           buses.removeAt(index);
-    //         },
-    //       ),
-    //     );
-    //   },
-    // );
   }
 }
 
@@ -84,7 +48,13 @@ class BusTile extends StatefulWidget {
 }
 
 class _BusTileState extends State<BusTile> {
-  String displayText = '';
+  String displayText = String.fromCharCodes(
+    Runes('\u5275' '\u9020' '\u6700'  '\u611B' '\u516C''\u8ECA''\u5217''\u8868'':''\n' 
+          '1.''\u641C' '\u5C0B' '\u672A''\u4F86' '\u6253' '\u7B97' '\u642D' '\u7684' '\u516C' '\u8ECA' '\n'
+          '2.''\u6309' '\u4E0B' '\u516C''\u8ECA' '\u7AD9' '\u724C' '\u65C1' '\u7684' '\u611B' '\u5FC3' '\u6309' '\u9215' '\n'
+          '3.' '\u56DE' '\u5230' '\u9019' '\u500B' '\u9801' '\u9762'
+        )
+    );
 
 
   bool pressAttention = false;
@@ -97,90 +67,50 @@ class _BusTileState extends State<BusTile> {
   Widget build(BuildContext context) {
     User1 user = Provider.of<User1>(context);
       if(widget.favoriteBus.isNotEmpty){
-        // use ListView.builder to display the list of favorite bus
         return ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           itemCount: widget.favoriteBus.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              leading: IconButton(
-                icon: Icon(
-                  Icons.favorite,
-                  color: Colors.red,
+            return Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Card(
+                margin: const EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
+                child: ListTile(
+                  leading: IconButton(
+                    icon: const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      color1 = Colors.grey;
+                      color2 = Colors.red;
+                      DatabaseService(uid: user.uid).deleteFavoriteBus(widget.favoriteBus[index].toString());
+                    },
+                  ),
+                  title: Text(
+                    widget.favoriteBus[index].toString(),
+                  ),
                 ),
-                onPressed: () {
-                  color1 = Colors.grey;
-                  color2 = Colors.red;
-                  DatabaseService(uid: user.uid).deleteFavoriteBus(widget.favoriteBus[index].toString());
-                },
-              ),
-              title: Text(
-                widget.favoriteBus[index].toString(),
               ),
             );
           },
         );
       } else{
-        String displayText = "Create your favorite bus first\n1. Search your favorite bus stop\n2. Click the heart icon to add it to your favorite bus list \n3.Look them here";
         return Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Card(
-            margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
+            margin: const EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
             child: ListTile(
               title: Center(
                 child: Text(
                   displayText,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
+                  style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
                 ),
               ),
             ),
           ),
         );
       }
-    
-    // String displayText = "";
-    // if (widget.favoriteBus.length > 3) {
-    //   displayText = widget.favoriteBus.substring(1, widget.favoriteBus.length - 1);
-    //   return Padding(
-    //     padding: const EdgeInsets.only(top: 8.0),
-    //     child: Card(
-    //       margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
-    //       child: ListTile(
-    //         leading: IconButton(
-    //                 icon: Icon(
-    //                   Icons.favorite,
-    //                   color: pressAttention ? color1 : color2,
-    //                 ),
-    //                 onPressed: () {
-    //                   setState(() {pressAttention = !pressAttention;
-    //                   DatabaseService(uid: user.uid).deleteFavoriteBus(widget.favoriteBus.substring(1, widget.favoriteBus.length - 1));});
-    //                   print(widget.favoriteBus);
-    //                 },
-    //               ),
-    //         title: Text(
-    //           displayText,
-    //           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300 ),
-    //           ),
-    //       ),
-    //     ),
-    //   );
-    // }else {
-      // displayText = "Create your favorite bus first\n1. Search your favorite bus stop\n2. Click the heart icon to add it to your favorite bus list \n3.Look them here";
-      // return Padding(
-      //   padding: const EdgeInsets.only(top: 8.0),
-      //   child: Card(
-      //     margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
-      //     child: ListTile(
-      //       title: Center(
-      //         child: Text(
-      //           displayText,
-      //           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // );
-    // }
   }
 }

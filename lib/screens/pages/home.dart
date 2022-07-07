@@ -4,8 +4,11 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:tapp/models/bus.dart';
 import 'package:tapp/screens/subpages/FavoriteScreen.dart';
 import 'package:tapp/screens/subpages/bus_result.dart';
+import 'package:tapp/screens/subpages/createbusgroup.dart';
 
-var titleRunesMessage = Runes('\u6211' + '\u7684' +'\u6700' + '\u611B');
+String titleRunesMessage = String.fromCharCodes(Runes('\u6211'  '\u7684' '\u6700'  '\u611B'));
+String grouptitleMessage = String.fromCharCodes(Runes('\u5275' '\u5EFA' '\u516C' '\u8ECA' '\u7FA4' '\u7D44'));
+
 class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
@@ -16,7 +19,7 @@ class GetData {
 }
 
   CollectionReference _busRoutes = FirebaseFirestore.instance.collection('bus');
-  var group_items;
+  // var group_items;
 class _HomeState extends State<Home> {
   String searchText = String.fromCharCodes(Runes('\u641C'+'\u5C0B'+'\u516C'+'\u8ECA'+'\u8DEF'+'\u7DDA'));
   var busRunesMessage = new Runes('\u516C'+'\u8ECA');
@@ -29,20 +32,11 @@ class _HomeState extends State<Home> {
 
   // final AuthService _auth = AuthService();
 
-  List<GetData> _getDataFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      return GetData(
-        bus_name: doc.get('Bus_name') ?? '',
-        city: doc.get('City') ?? '',
-        way: doc.get('Way') ?? '',
-      );
-    }).toList();
-  }
 
 
   static const historyLength = 5;
 
-  List<String> _searchHistory = [];
+  final List<String> _searchHistory = [];
 
   late List<String> filteredSearchHistory;
 
@@ -116,7 +110,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             transition: CircularFloatingSearchBarTransition(),
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             title: Text(
               selectedTerm,
               style: Theme.of(context).textTheme.headline6,
@@ -194,8 +188,10 @@ class _HomeState extends State<Home> {
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
                               return ListView(
+                                // scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
-                                children: [
+                                // physics: ScrollPhysics(),
+                                children: const [
                                   Center(
                                     child: Text("Searching..."),
                                   ),
@@ -203,7 +199,9 @@ class _HomeState extends State<Home> {
                               );
                             }
                             return ListView(
+                              scrollDirection: Axis.vertical,
                               shrinkWrap: true,
+                              physics: ScrollPhysics(),
                               children: [
                                 for (var doc in snapshot.data!.docs)
                                   if (doc.get('Bus_name').toString().contains(key)) 
@@ -217,7 +215,7 @@ class _HomeState extends State<Home> {
                                       addSearchTerm(doc.get('Bus_name')+'   ('+doc.get('Way')+')');
                                       Navigator.push(
                                         context,
-                                        new MaterialPageRoute(
+                                        MaterialPageRoute(
                                           builder: (context) => BusPage(
                                             bus: Bus(busName: '${doc.get('Bus_name')}', way: '${doc.get('Way')}', city: '${doc.get('City')}'),
                                           ),
@@ -260,7 +258,7 @@ class BackGroundView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.search,
               size: 60,
             ),
@@ -287,83 +285,102 @@ class BackGroundView extends StatelessWidget {
           ),
         ),
       ),
-      body: 
-       Builder(
-         builder: (group){
-            // if (group == 0) {
-              return Center(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        //change to favorite screen 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FavoritePage(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(top: 10.0),
-                        child: Center(
-                          child: Card(
-                            child: Container(
-                              margin: EdgeInsets.all(10),
-                              height: 100,
-                              width: 450,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("asset/mount.jpg"),
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  String.fromCharCodes(titleRunesMessage),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 0, 0, 0)
-                                  )
-                                ),
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  )
-                
-                // child: Text(
-                //   'Search your favorite bus \nand create a group now',
-                //   style: Theme.of(context).textTheme.headline6,
-                // ),
-              );
-            // } else {
-            //   return ListView(
-            //     shrinkWrap: true,
-            //     children: [
-                  // for (var doc in group_items)
-                  //   InkWell(
-                  //     child: ListTile(
-                  //       title: Text(doc.get('Bus_name')),
-                  //       subtitle: Text(doc.get('Way')),
-                  //       trailing: Text(doc.get('City')),
-                  //     ),
-                  //     onTap: (){
-                  //       // fsb!.addSearchTerm(doc.get('Bus_name'));
-                  //     }
-                  //   )
-            //     ],
-            //   );
-            // }
-         }
-       )
+      body: Scaffold(
+        
+      )
+      //  Builder(
+      //    builder: (context){
+      //         return Center(
+      //           child: Column(
+      //             children: [
+      //               InkWell(
+      //                 onTap: () {
+      //                   Navigator.push(
+      //                     context,
+      //                     MaterialPageRoute(
+      //                       builder: (context) => FavoritePage(),
+      //                     ),
+      //                   );
+      //                 },
+      //                 child: Container(
+      //                   margin: EdgeInsets.only(top: 10.0),
+      //                   child: Center(
+      //                     child: Card(
+      //                       child: Container(
+      //                         margin: EdgeInsets.all(10),
+      //                         height: 100,
+      //                         width: 450,
+      //                         decoration: BoxDecoration(
+      //                           image: DecorationImage(
+      //                             image: AssetImage("asset/mount.jpg"),
+      //                             fit: BoxFit.fitWidth,
+      //                           ),
+      //                         ),
+      //                         child: Center(
+      //                           child: Text(
+      //                             titleRunesMessage,
+      //                             style: TextStyle(
+      //                                 fontSize: 20,
+      //                                 fontWeight: FontWeight.bold,
+      //                                 color: Color.fromARGB(255, 0, 0, 0)
+      //                             )
+      //                           ),
+      //                         ),
+      //                       ),
+      //                       shape: RoundedRectangleBorder(
+      //                         borderRadius: BorderRadius.circular(10.0),
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //               InkWell(
+      //                 onTap: () {
+      //                   //change to favorite screen 
+      //                   Navigator.push(
+      //                     context,
+      //                     MaterialPageRoute(
+      //                       builder: (context) => CreateGroupPage(),
+      //                     ),
+      //                   );
+      //                 },
+      //                 child: Container(
+      //                   margin: EdgeInsets.only(top: 10.0),
+      //                   child: Center(
+      //                     child: Card(
+      //                       child: Container(
+      //                         margin: EdgeInsets.all(10),
+      //                         height: 100,
+      //                         width: 450,
+      //                         decoration: BoxDecoration(
+      //                           image: DecorationImage(
+      //                             image: AssetImage("asset/sunrise.jpg"),
+      //                             fit: BoxFit.fitWidth,
+      //                           ),
+      //                         ),
+      //                         child: Center(
+      //                           child: Text(
+      //                             grouptitleMessage,
+      //                             style: TextStyle(
+      //                                 fontSize: 20,
+      //                                 fontWeight: FontWeight.bold,
+      //                                 color: Color.fromARGB(255, 0, 0, 0)
+      //                             )
+      //                           ),
+      //                         ),
+      //                       ),
+      //                       shape: RoundedRectangleBorder(
+      //                         borderRadius: BorderRadius.circular(10.0),
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ],
+      //             )
+      //         );
+        //  }
+      //  )
     );
   }
 }

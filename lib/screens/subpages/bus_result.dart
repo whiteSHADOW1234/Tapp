@@ -1,7 +1,4 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-// import 'package:tapp/models/favorite_bus.dart';
 import 'package:tapp/models/user.dart';
 import 'package:tapp/services/database.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +62,6 @@ class BusApiService {
       GoData = ['Could not connect to server...'];
       BackData = ['Could not connect to server...'];
     }
-    // print(jsonData[0]['Stops'][0]['StopName']['Zh_tw']);
     }
 }
 
@@ -121,10 +117,6 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
                   widget.bus_name,
                   style: const TextStyle(fontSize: 30),
                 ),
-                // Text(
-                //   widget.way,
-                //   style: const TextStyle(fontSize: 15),
-                // ),
               ],
             ),
             leading: IconButton(
@@ -196,23 +188,124 @@ class _MyListButtonState extends State<MyListButton> {
           ),
           onPressed: () {
             setState(() {
-                DatabaseService(uid: user.uid).addFavoriteBus(widget.busName, widget.city, widget.title.substring(0, widget.seperate+1));
-              // createFavoriteBus(busName: widget.busName, city: widget.city, title: widget.title);
+              // DatabaseService(uid: user.uid).addFavoriteBus(widget.busName, widget.city, widget.title.substring(0, widget.seperate+1));
               pressAttention = !pressAttention;
-              print(widget.title);
-              print(user.uid);
+              if (pressAttention) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Groups"),
+                      content: GroupList(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1)),
+                      actions: <Widget>[
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text("Cancel"),
+                          onPressed: () {
+                            pressAttention = !pressAttention;
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        // TextButton(
+                        //   child: Text("OK"),
+                        //   onPressed: () {
+                        //     Navigator.of(context).pop();
+                        //   },
+                        // ),
+                      ],
+                    );
+                  },
+                );
+              }
             });
           },
         ),
         title: Text(
             widget.title.substring(0,widget.seperate+1),
-            style: TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 20),
           ),
           trailing: Text(
             widget.title.substring(widget.seperate+1) == "" ? "No Data" : widget.title.substring(widget.seperate+1),
-            style: TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 20),
           ),
       ),
     );
   }
 }
+
+
+
+class GroupList extends StatefulWidget {
+  final String title;
+  final String busName;
+  final String city;
+  const GroupList({Key? key, required this.title, required this.busName, required this.city}) : super(key: key);
+
+  @override
+  State<GroupList> createState() => _GroupListState();
+}
+
+class _GroupListState extends State<GroupList> {
+  @override
+  Widget build(BuildContext context) {
+    User1 user = Provider.of<User1>(context);
+
+    return FutureBuilder<dynamic>(
+      future: DatabaseService(uid: user.uid).getGroupList(), 
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                Map<dynamic, dynamic> map = snapshot.data[index];
+                // final groupStuff = map.toList();
+                return ListTile(
+                  // title: Column(
+                  //   children: groupStuff.map((group) {
+                  //     return Text(group.toString());
+                  //   }).toList()),
+                  leading: IconButton(
+                    icon: const Icon(
+                      Icons.add,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                    onPressed: () {
+                      // DatabaseService(uid: user.uid).addGroupElement(widget.busName, widget.city, widget.title.toString());
+                      print(map["Group Stuff"]);
+                      Navigator.pop(context);
+                    },
+                  )
+                );
+                // return snapshot.data[index] == null ? const Center(child: Text('Create an Group')) : ListView.builder(
+                //   itemCount: snapshot.data[index].length,
+                //   itemBuilder: (context, index) {
+                //     return ListTile(
+                //       title: Text(snapshot.data[index]),
+                //     );
+                //   },
+                // );
+              },
+            ),
+          );
+        }
+      },
+      );
+    
+  }
+}
+
+
