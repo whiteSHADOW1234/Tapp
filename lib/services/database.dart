@@ -82,32 +82,26 @@ class DatabaseService {
     });
   }
 
-  // void addGroupBus(String groupName, String title) {
-  //   tappCollection.doc(uid).update({
-  //     'Groups': FieldValue.arrayUnion([groupName + "//" + title])
-  //   });
 
-  // }
+  // void deleteGroup(String groupName) {}
 
-  void deleteGroup(String groupName) {}
-
-  void addGroupElement(busName, city, String string) {
+  void addGroupElement(busName, city, String string, int groupIndex) {
     // List<Map<String, String>> myData = [{'Elements' : busName + " " + city + " " + string, 'Group Name' : groupName}];
-    // String myData = busName + " " + city + " " + string;
     String myData = busName + " " + city + " " + string;
-    tappCollection.doc(uid).update({
-      'Group Stuff.0.elements': FieldValue.arrayUnion([myData])
     
-      // 'Group Stuff.1.Elements': FieldValue.arrayUnion(([myData]))
+    tappCollection.doc(uid).update({
+      'Group Stuff.$groupIndex.elements': FieldValue.arrayUnion([myData])
+    },);
+  }
+
+  void createGroup(String busName, String city, String substring, groupName,int index) {
+    List<Map<String, String>> myData = [{'elements' : busName + " " + city + " " + substring, 'group name' : groupName}];
+    tappCollection.doc(uid).update({
+      'Group Stuff.$index': {'elements' : busName + " " + city + " " + substring, 'group name' : groupName}
     },);
   }
 
 
-  // void deleteGroupBus(String title) {
-  //   tappCollection.doc(uid).update({
-  //     'Groups': FieldValue.arrayRemove([title])
-  //   });
-  // }
 
 
 

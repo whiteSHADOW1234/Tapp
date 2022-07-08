@@ -9,6 +9,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 var goRunesMessage = Runes('\u5F80');
+String groupName = '';
+int groupIndex = 0;
 
 const kAndroidUserAgent = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
 
@@ -80,10 +82,13 @@ class BusPage extends StatefulWidget {
   @override
   State<BusPage> createState() => _BusPageState();
 }
+
+
 List<String> godata=["Loading..."];
 List<String> backdata=["Loading..."];
 Color color1 = Colors.grey;
 Color color2 = Colors.red;
+
 class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<BusPage>{
 
   setUpBusInfo() async {
@@ -197,13 +202,46 @@ class _MyListButtonState extends State<MyListButton> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text("Groups"),
+                      title: const Text("Groups"),
                       content: GroupList(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1)),
                       actions: <Widget>[
                         IconButton(
                           icon: const Icon(Icons.add),
                           onPressed: () {
+                            //pop out a AlertDialog
                             Navigator.of(context).pop();
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Add a Group Name"),
+                                  content: TextField(
+                                    decoration: const InputDecoration(
+                                      labelText: "Group Name",
+                                    ),
+                                    onChanged: (value) {
+                                      groupName = value;
+                                    },
+                                  ),
+                                  // content: AddGroup(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1)),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text("Cancel"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text("Add"),
+                                      onPressed: () {
+                                        DatabaseService(uid: user.uid).createGroup(widget.busName, widget.city, widget.title.substring(0, widget.seperate+1), groupName, groupIndex);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                         ),
                         TextButton(
@@ -274,29 +312,12 @@ class _GroupListState extends State<GroupList> {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 Map<dynamic, dynamic> map = snapshot.data[index];
-                // List<Map<String, dynamic>> groupList = (map['Group Stuff'] as List<dynamic>).map((m) => Map<String, dynamic>.from(m)).toList();
-
+                // return ListTile(
+                //   title: Text(snapshot.data[index]['Group Stuff'].toString())
+                // );
                 LinkedHashMap<dynamic, dynamic> map2 = map['Group Stuff'];
                 List<dynamic> groupStuff = map2.values.toList();
-
-                return ListTile(
-                  // title: Text(map['Group Stuff'].toString()),
-                  title: Column(
-                    children: groupStuff.map((group) {
-                      return Text(group["group name"].toString());
-                    }).toList()),
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.add,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
-                    onPressed: () {
-                      DatabaseService(uid: user.uid).addGroupElement(widget.busName, widget.city, widget.title.toString());
-                      print(map["Group Stuff"]);
-                      Navigator.pop(context);
-                    },
-                  )
-                );
+                return GroupTile(groupStuff: groupStuff, busName:widget.busName, city:widget.city, title: widget.title.toString());
               },
             ),
           );
@@ -307,4 +328,52 @@ class _GroupListState extends State<GroupList> {
   }
 }
 
+
+class GroupTile extends StatefulWidget {
+  final List<dynamic> groupStuff;
+  final String busName;
+  final String city;
+  final String title;
+  const GroupTile({Key? key, required this.groupStuff, required this.busName,required this.city,required this.title}) : super(key: key);
+
+  @override
+  State<GroupTile> createState() => _GroupTileState();
+}
+
+class _GroupTileState extends State<GroupTile> {
+  @override
+  Widget build(BuildContext context) {
+    User1 user = Provider.of<User1>(context);
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: widget.groupStuff.length,
+      itemBuilder: (context, index) {
+        groupIndex = index+1;
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Text(widget.groupStuff[index]['group name'].toString()),
+            leading: IconButton(
+              icon: const Icon(
+                Icons.add,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ),
+              onPressed: () {
+                DatabaseService(uid: user.uid).addGroupElement(
+                  widget.busName,
+                  widget.city,
+                  widget.title,
+                  index,
+                );
+                print(widget.groupStuff[index]);
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+      }
+    );
+  }
+}
 
