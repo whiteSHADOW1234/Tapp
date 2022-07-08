@@ -195,7 +195,6 @@ class _MyListButtonState extends State<MyListButton> {
           ),
           onPressed: () {
             setState(() {
-              // DatabaseService(uid: user.uid).addFavoriteBus(widget.busName, widget.city, widget.title.substring(0, widget.seperate+1));
               pressAttention = !pressAttention;
               if (pressAttention) {
                 showDialog(
@@ -251,12 +250,6 @@ class _MyListButtonState extends State<MyListButton> {
                             Navigator.of(context).pop();
                           },
                         ),
-                        // TextButton(
-                        //   child: Text("OK"),
-                        //   onPressed: () {
-                        //     Navigator.of(context).pop();
-                        //   },
-                        // ),
                       ],
                     );
                   },
@@ -312,9 +305,6 @@ class _GroupListState extends State<GroupList> {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 Map<dynamic, dynamic> map = snapshot.data[index];
-                // return ListTile(
-                //   title: Text(snapshot.data[index]['Group Stuff'].toString())
-                // );
                 LinkedHashMap<dynamic, dynamic> map2 = map['Group Stuff'];
                 List<dynamic> groupStuff = map2.values.toList();
                 return GroupTile(groupStuff: groupStuff, busName:widget.busName, city:widget.city, title: widget.title.toString());

@@ -15,7 +15,7 @@ class _BusListState extends State<BusList> {
   Widget build(BuildContext context) {
     User1 user = Provider.of<User1>(context);
 
-    final buses = Provider.of<List<FavoriteBus>>(context);
+    // final buses = Provider.of<List<FavoriteBus>>(context);
 
     return FutureBuilder<dynamic>(
       future: DatabaseService(uid: user.uid).getBusList(), 

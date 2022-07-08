@@ -1,10 +1,16 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:tapp/models/bus.dart';
+import 'package:tapp/models/user.dart';
 import 'package:tapp/screens/subpages/FavoriteScreen.dart';
 import 'package:tapp/screens/subpages/bus_result.dart';
 import 'package:tapp/screens/subpages/createbusgroup.dart';
+import 'package:tapp/screens/subpages/groupPage.dart';
+import 'package:tapp/services/database.dart';
 
 String titleRunesMessage = String.fromCharCodes(Runes('\u6211'  '\u7684' '\u6700'  '\u611B'));
 String grouptitleMessage = String.fromCharCodes(Runes('\u5275' '\u5EFA' '\u516C' '\u8ECA' '\u7FA4' '\u7D44'));
@@ -272,6 +278,7 @@ class BackGroundView extends StatelessWidget {
     }
 
     final fsb = FloatingSearchBar.of(context);
+    User1 user = Provider.of<User1>(context);
 
     return Scaffold(
       appBar:AppBar(
@@ -285,102 +292,201 @@ class BackGroundView extends StatelessWidget {
           ),
         ),
       ),
-      body: Scaffold(
-        
-      )
+      body: FutureBuilder<dynamic>(
+        future: DatabaseService(uid: user.uid).getGroupList(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final groupList = snapshot.data;
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: groupList.length,
+            itemBuilder: (context, index) {
+              Map<dynamic, dynamic> map = snapshot.data[index];
+              LinkedHashMap<dynamic, dynamic> map2 = map['Group Stuff'];
+              List<dynamic> groupStuff = map2.values.toList();
+              return GroupCard(
+                groupStuff: groupStuff,
+              );
+            },
+          );
+        },
+      ),
+
+
       //  Builder(
       //    builder: (context){
       //         return Center(
       //           child: Column(
       //             children: [
-      //               InkWell(
-      //                 onTap: () {
-      //                   Navigator.push(
-      //                     context,
-      //                     MaterialPageRoute(
-      //                       builder: (context) => FavoritePage(),
-      //                     ),
-      //                   );
-      //                 },
-      //                 child: Container(
-      //                   margin: EdgeInsets.only(top: 10.0),
-      //                   child: Center(
-      //                     child: Card(
-      //                       child: Container(
-      //                         margin: EdgeInsets.all(10),
-      //                         height: 100,
-      //                         width: 450,
-      //                         decoration: BoxDecoration(
-      //                           image: DecorationImage(
-      //                             image: AssetImage("asset/mount.jpg"),
-      //                             fit: BoxFit.fitWidth,
-      //                           ),
-      //                         ),
-      //                         child: Center(
-      //                           child: Text(
-      //                             titleRunesMessage,
-      //                             style: TextStyle(
-      //                                 fontSize: 20,
-      //                                 fontWeight: FontWeight.bold,
-      //                                 color: Color.fromARGB(255, 0, 0, 0)
-      //                             )
-      //                           ),
-      //                         ),
-      //                       ),
-      //                       shape: RoundedRectangleBorder(
-      //                         borderRadius: BorderRadius.circular(10.0),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ),
-      //               InkWell(
-      //                 onTap: () {
-      //                   //change to favorite screen 
-      //                   Navigator.push(
-      //                     context,
-      //                     MaterialPageRoute(
-      //                       builder: (context) => CreateGroupPage(),
-      //                     ),
-      //                   );
-      //                 },
-      //                 child: Container(
-      //                   margin: EdgeInsets.only(top: 10.0),
-      //                   child: Center(
-      //                     child: Card(
-      //                       child: Container(
-      //                         margin: EdgeInsets.all(10),
-      //                         height: 100,
-      //                         width: 450,
-      //                         decoration: BoxDecoration(
-      //                           image: DecorationImage(
-      //                             image: AssetImage("asset/sunrise.jpg"),
-      //                             fit: BoxFit.fitWidth,
-      //                           ),
-      //                         ),
-      //                         child: Center(
-      //                           child: Text(
-      //                             grouptitleMessage,
-      //                             style: TextStyle(
-      //                                 fontSize: 20,
-      //                                 fontWeight: FontWeight.bold,
-      //                                 color: Color.fromARGB(255, 0, 0, 0)
-      //                             )
-      //                           ),
-      //                         ),
-      //                       ),
-      //                       shape: RoundedRectangleBorder(
-      //                         borderRadius: BorderRadius.circular(10.0),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ),
+
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => FavoritePage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     margin: EdgeInsets.only(top: 10.0),
+                    //     child: Center(
+                    //       child: Card(
+                    //         child: Container(
+                    //           margin: EdgeInsets.all(10),
+                    //           height: 100,
+                    //           width: 450,
+                    //           decoration: BoxDecoration(
+                    //             image: DecorationImage(
+                    //               image: AssetImage("asset/mount.jpg"),
+                    //               fit: BoxFit.fitWidth,
+                    //             ),
+                    //           ),
+                    //           child: Center(
+                    //             child: Text(
+                    //               titleRunesMessage,
+                    //               style: TextStyle(
+                    //                   fontSize: 20,
+                    //                   fontWeight: FontWeight.bold,
+                    //                   color: Color.fromARGB(255, 0, 0, 0)
+                    //               )
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(10.0),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    
+                    // InkWell(
+                    //   onTap: () {
+                    //     //change to favorite screen 
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => CreateGroupPage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     margin: EdgeInsets.only(top: 10.0),
+                    //     child: Center(
+                    //       child: Card(
+                    //         child: Container(
+                    //           margin: EdgeInsets.all(10),
+                    //           height: 100,
+                    //           width: 450,
+                    //           decoration: BoxDecoration(
+                    //             image: DecorationImage(
+                    //               image: AssetImage("asset/sunrise.jpg"),
+                    //               fit: BoxFit.fitWidth,
+                    //             ),
+                    //           ),
+                    //           child: Center(
+                    //             child: Text(
+                    //               grouptitleMessage,
+                    //               style: TextStyle(
+                    //                   fontSize: 20,
+                    //                   fontWeight: FontWeight.bold,
+                    //                   color: Color.fromARGB(255, 0, 0, 0)
+                    //               )
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(10.0),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                  
       //             ],
       //             )
       //         );
-        //  }
+      //    }
       //  )
     );
+  }
+
+}
+
+
+class GroupCard extends StatefulWidget {
+  final List<dynamic> groupStuff;
+  const GroupCard({Key? key, required this.groupStuff}) : super(key: key);
+
+  @override
+  State<GroupCard> createState() => _GroupCardState();
+}
+
+class _GroupCardState extends State<GroupCard> {
+  @override
+  Widget build(BuildContext context) {
+    User1 user = Provider.of<User1>(context);
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: widget.groupStuff.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GroupPage(
+                    groupStuff: widget.groupStuff[index],
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              child: Card(
+                child: Container(
+                  margin: EdgeInsets.all(10),
+                  height: 100,
+                  width: 450,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color.fromARGB(255, 48, 162, 255), Color.fromARGB(255, 33, 243, 201)],
+                      begin: Alignment.bottomRight,
+                      end: Alignment.topLeft,
+                    ),
+                    // image: DecorationImage(
+                    //   image: AssetImage("asset/mount.jpg"),
+                    //   fit: BoxFit.fitWidth,
+                    // ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      widget.groupStuff[index]['group name'].toString(),
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 0, 0, 0)
+                      )
+                    ),
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    
   }
 }

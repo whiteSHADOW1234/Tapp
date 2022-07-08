@@ -8,7 +8,7 @@ class DatabaseService {
   final String uid;
   DatabaseService({ required this.uid });
 
-  // collection reference
+
   final CollectionReference tappCollection = FirebaseFirestore.instance.collection('tappers');
 
   Future<void> updateUserData(String userAccountName,String userEmail, String userPassword) async {
@@ -23,7 +23,6 @@ class DatabaseService {
 
 
   Future<List<dynamic>> getBusList() async {
-  var firestore = FirebaseFirestore.instance;
 
   return tappCollection.get().then((QuerySnapshot snapshot) {
     if (snapshot.docs.isNotEmpty) {
@@ -83,10 +82,7 @@ class DatabaseService {
   }
 
 
-  // void deleteGroup(String groupName) {}
-
   void addGroupElement(busName, city, String string, int groupIndex) {
-    // List<Map<String, String>> myData = [{'Elements' : busName + " " + city + " " + string, 'Group Name' : groupName}];
     String myData = busName + " " + city + " " + string;
     
     tappCollection.doc(uid).update({
@@ -95,7 +91,6 @@ class DatabaseService {
   }
 
   void createGroup(String busName, String city, String substring, groupName,int index) {
-    List<Map<String, String>> myData = [{'elements' : busName + " " + city + " " + substring, 'group name' : groupName}];
     tappCollection.doc(uid).update({
       'Group Stuff.$index': {'elements' : busName + " " + city + " " + substring, 'group name' : groupName}
     },);
@@ -127,8 +122,3 @@ class DatabaseService {
 
 }
 
-class Group {
-  final String groupName;
-  final List<String> favoriteIndexsWithOrder;
-  Group({ required this.groupName, required this.favoriteIndexsWithOrder });
-}
