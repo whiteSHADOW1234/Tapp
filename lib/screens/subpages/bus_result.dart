@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:provider/provider.dart';
 import 'package:tapp/models/user.dart';
 import 'package:tapp/services/database.dart';
@@ -272,32 +274,29 @@ class _GroupListState extends State<GroupList> {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 Map<dynamic, dynamic> map = snapshot.data[index];
-                // final groupStuff = map.toList();
+                // List<Map<String, dynamic>> groupList = (map['Group Stuff'] as List<dynamic>).map((m) => Map<String, dynamic>.from(m)).toList();
+
+                LinkedHashMap<dynamic, dynamic> map2 = map['Group Stuff'];
+                List<dynamic> groupStuff = map2.values.toList();
+
                 return ListTile(
-                  // title: Column(
-                  //   children: groupStuff.map((group) {
-                  //     return Text(group.toString());
-                  //   }).toList()),
+                  // title: Text(map['Group Stuff'].toString()),
+                  title: Column(
+                    children: groupStuff.map((group) {
+                      return Text(group["group name"].toString());
+                    }).toList()),
                   leading: IconButton(
                     icon: const Icon(
                       Icons.add,
                       color: Color.fromARGB(255, 0, 0, 0),
                     ),
                     onPressed: () {
-                      // DatabaseService(uid: user.uid).addGroupElement(widget.busName, widget.city, widget.title.toString());
+                      DatabaseService(uid: user.uid).addGroupElement(widget.busName, widget.city, widget.title.toString());
                       print(map["Group Stuff"]);
                       Navigator.pop(context);
                     },
                   )
                 );
-                // return snapshot.data[index] == null ? const Center(child: Text('Create an Group')) : ListView.builder(
-                //   itemCount: snapshot.data[index].length,
-                //   itemBuilder: (context, index) {
-                //     return ListTile(
-                //       title: Text(snapshot.data[index]),
-                //     );
-                //   },
-                // );
               },
             ),
           );
