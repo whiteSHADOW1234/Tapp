@@ -92,7 +92,7 @@ class DatabaseService {
 
   void createGroup(String busName, String city, String substring, groupName,int index) {
     tappCollection.doc(uid).update({
-      'Group Stuff.$index': {'elements' : busName + " " + city + " " + substring, 'group name' : groupName}
+      'Group Stuff.$index': {'elements' : [busName + " " + city + " " + substring], 'group name' : groupName}
     },);
   }
 

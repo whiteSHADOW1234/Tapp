@@ -42,7 +42,7 @@ class _GroupPageState extends State<GroupPage> {
       body: ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: widget.groupStuff.length-1,
+        itemCount: widget.groupStuff['elements'].length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(top: 8.0),
@@ -59,7 +59,7 @@ class _GroupPageState extends State<GroupPage> {
                   },
                 ),
                 title: Text(
-                  widget.groupStuff['elements'].toString(),
+                  widget.groupStuff['elements'][index].toString(),
                 ),
               ),
             ),

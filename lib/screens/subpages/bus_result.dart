@@ -9,28 +9,40 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 var goRunesMessage = Runes('\u5F80');
+var almostMessage = Runes('\u5373' '\u5C07' '\u5230' '\u7AD9');
+var noCarMessage = Runes('\u5C1A' '\u672A' '\u767C' '\u8ECA');
 String groupName = '';
 int groupIndex = 0;
 
 const kAndroidUserAgent = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
 
 class BusApiService {
-  List<String> GoData=[];
-  List<String> BackData=[];
+  List<String> goTimeData = [];
+  List<String> backTimeData = [];
+
+  List<String> goStopNameData=[];
+  List<String> backStopNameData=[];
+
+  List<String> goData=[];
+  List<String> backData=[];
   String City = "";
   String BusName = "";
   String Url = "";
+  String busStopUrl = "";
 
   BusApiService({required String city, required String busname}) {
     City = city;
     BusName = busname;
 
     Url = 'https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/$City/$BusName?%24format=JSON';
+    busStopUrl = 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/$City/$BusName?%24format=JSON';
   }
   
-  Future<void> getData() async {
+
+
+
+  Future<void> getTimeData() async {
     try {
-      int test = 0;
       var response = await http.get(
           Uri.parse(Url),
           headers: {
@@ -40,34 +52,81 @@ class BusApiService {
       var jsonData = json.decode(response.body);
       print('Go');
       print(jsonData.length);
-      // for (var i = 0; i < jsonData.length; i++){
-      //   if (jsonData[i]['Direction'] != '1' && test == 0){
-      //     print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
-      //     GoData.add(jsonData[i]['StopName']['Zh_tw']+"  "+jsonData[i]['EstimateTime'].toString());
-      //   }else{
-      //     test = 1;
-      //     print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
-      //     BackData.add(jsonData[i]['StopName']['Zh_tw']+"  "+ jsonData[i]['EstimateTime'].toString());
-      //   }
-      // }
-      for (var i = 0; i <44; i++) {
-        print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
-        GoData.add(jsonData[i]['StopName']['Zh_tw']+"  "+jsonData[i]['EstimateTime'].toString());
+      for (var i = 0; i < jsonData.length; i++){
+        if (jsonData[i]['Direction']  == 0){
+          print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
+          goTimeData.add(jsonData[i]['StopName']['Zh_tw']+"///"+jsonData[i]['EstimateTime'].toString());
+        }else{
+          print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
+          backTimeData.add(jsonData[i]['StopName']['Zh_tw']+"///"+ jsonData[i]['EstimateTime'].toString());
+        }
       }
-      print('Back');
-      for (var i = 44; i < jsonData.length; i++) {
-        print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
-        BackData.add(jsonData[i]['StopName']['Zh_tw']+"  "+ jsonData[i]['EstimateTime'].toString());
-      }
-      print('Done');
-
     } catch (e) {
       print('Caught Error: $e');
-      GoData = ['Could not connect to server...'];
-      BackData = ['Could not connect to server...'];
+      goTimeData = ['Could not connect to server...'];
+      backTimeData = ['Could not connect to server...'];
     }
+  }
+
+
+
+  Future<void> getBusStopData() async {
+    try{
+      var response = await http.get(
+          Uri.parse(busStopUrl),
+          headers: {
+            "Accept": "application/json",
+            "User-Agent": kAndroidUserAgent,
+          });
+      var jsonData = json.decode(response.body);
+      print(jsonData[0]['Stops'][0]['StopName']['Zh_tw']);
+      print(jsonData[0]['Stops'].length);
+      for(var i = 0; i < jsonData[0]['Stops'].length; i++){
+        print(jsonData[0]['Stops'][i]['StopName']['Zh_tw']);
+        goStopNameData.add(jsonData[0]['Stops'][i]['StopName']['Zh_tw']);
+      }
+      for(var i = 0; i < jsonData[1]['Stops'].length; i++){
+        print(jsonData[1]['Stops'][i]['StopName']['Zh_tw']);
+        backStopNameData.add(jsonData[1]['Stops'][i]['StopName']['Zh_tw']);
+      }
+    } catch (e) {
+      print('Caught Error: $e');
+      goStopNameData = ['...'];
+      backStopNameData = ['...'];
     }
+  }
+
+
+
+  Future<void> getmergeListData() async {
+    await getTimeData();
+    await getBusStopData();
+
+    for(var i = 0; i < goStopNameData.length; i++){
+      for (var j = 0; j < goTimeData.length; j++){
+        if (goTimeData[j].split("///")[0] == goStopNameData[i]){
+          goData.add("${goStopNameData[i]} /// ${goTimeData[j].split("///")[1]}");
+          break;
+        }
+      }
+    }
+
+    for(var i=0; i< backStopNameData.length; i++){
+      for (var j = 0; j < backTimeData.length; j++){
+        if (backTimeData[j].split("///")[0] == backStopNameData[i]){
+          backData.add("${backStopNameData[i]} /// ${backTimeData[j].split("///")[1]}");
+          break;
+        }
+      }
+    }
+  }
 }
+
+
+
+
+
+
 
 
 class BusPage extends StatefulWidget {
@@ -84,8 +143,8 @@ class BusPage extends StatefulWidget {
 }
 
 
-List<String> godata=["Loading..."];
-List<String> backdata=["Loading..."];
+List<String> goData=["Loading..."];
+List<String> backData=["Loading..."];
 Color color1 = Colors.grey;
 Color color2 = Colors.red;
 
@@ -95,11 +154,11 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
 
     BusApiService instance = BusApiService(city: widget.city, busname: widget.bus_name);
 
-    await instance.getData();
+    await instance.getmergeListData();
     
     setState(() {
-      godata = instance.GoData;
-      backdata = instance.BackData;
+      goData = instance.goData;
+      backData = instance.backData;
     });
     
   }
@@ -111,7 +170,7 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
 
   @override
   Widget build(BuildContext context) {
-    var way_sep = widget.way.indexOf(">>>");
+    var waySep = widget.way.indexOf(">>>");
     super.build(context);
     return MaterialApp(
       home: DefaultTabController(
@@ -134,25 +193,25 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
             ),
             bottom: TabBar(
               tabs: [
-                Tab(text: String.fromCharCodes(goRunesMessage) + widget.way.substring(way_sep + 3)),
-                Tab(text: String.fromCharCodes(goRunesMessage) + widget.way.substring(0, way_sep)),
+                Tab(text: String.fromCharCodes(goRunesMessage) + widget.way.substring(waySep + 3)),
+                Tab(text: String.fromCharCodes(goRunesMessage) + widget.way.substring(0, waySep)),
               ],
             ),
           ),
           body: TabBarView(
             children: [
-              godata.isEmpty ? const Center(child: Text('No Data')) : ListView.builder(
-                itemCount: godata.length,
+              goData.isEmpty ? const Center(child: Text('No Data')) : ListView.builder(
+                itemCount: goData.length,
                 itemBuilder: (context, index) {
-                  var dataAim = godata[index].indexOf("  ");
-                  return MyListButton(busName: widget.bus_name, city: widget.city, title: godata[index],seperate: dataAim);
+                  var dataAim = goData[index].indexOf("///");
+                  return MyListButton(busName: widget.bus_name, city: widget.city, title: goData[index],seperate: dataAim);
                 },
               ),
-              backdata.isEmpty ? const Center(child: Text('No Data')) : ListView.builder(
-                itemCount: backdata.length,
+              backData.isEmpty ? const Center(child: Text('No Data')) : ListView.builder(
+                itemCount: backData.length,
                 itemBuilder: (context, index) {
-                  var dataAim = backdata[index].indexOf("  ");
-                  return MyListButton(busName: widget.bus_name, city: widget.city, title: backdata[index],seperate: dataAim);
+                  var dataAim = backData[index].indexOf("///");
+                  return MyListButton(busName: widget.bus_name, city: widget.city, title: backData[index],seperate: dataAim);
                 },
               ),
             ],
@@ -185,6 +244,19 @@ class _MyListButtonState extends State<MyListButton> {
   Color color2 = Colors.red;
   @override
   Widget build(BuildContext context) {
+    String busTime = "Loading...";
+    // print(widget.title + "......" + widget.title.substring(widget.seperate+3));
+    try{
+      var timeInt = int.parse(widget.title.substring(widget.seperate+3));
+      assert(timeInt is int);
+      if(timeInt < 60){
+        busTime = String.fromCharCodes(almostMessage);
+      }else{
+        busTime = "${(timeInt/60).toStringAsFixed(0)}min";
+      }
+    } catch (e) {
+      busTime = String.fromCharCodes(noCarMessage);
+    }
     User1 user = Provider.of<User1>(context);
     return Card(
       child: ListTile(
@@ -207,7 +279,6 @@ class _MyListButtonState extends State<MyListButton> {
                         IconButton(
                           icon: const Icon(Icons.add),
                           onPressed: () {
-                            //pop out a AlertDialog
                             Navigator.of(context).pop();
                             showDialog(
                               context: context,
@@ -222,7 +293,6 @@ class _MyListButtonState extends State<MyListButton> {
                                       groupName = value;
                                     },
                                   ),
-                                  // content: AddGroup(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1)),
                                   actions: <Widget>[
                                     TextButton(
                                       child: const Text("Cancel"),
@@ -263,7 +333,8 @@ class _MyListButtonState extends State<MyListButton> {
             style: const TextStyle(fontSize: 20),
           ),
           trailing: Text(
-            widget.title.substring(widget.seperate+1) == "" ? "No Data" : widget.title.substring(widget.seperate+1),
+            busTime,
+            // widget.title.substring(widget.seperate+3) == "" ? "No Data" : (widget.title.substring(widget.seperate+3)),
             style: const TextStyle(fontSize: 20),
           ),
       ),

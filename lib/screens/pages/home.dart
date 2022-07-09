@@ -468,13 +468,25 @@ class _GroupCardState extends State<GroupCard> {
                     // ),
                   ),
                   child: Center(
-                    child: Text(
-                      widget.groupStuff[index]['group name'].toString(),
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0)
-                      )
+                    child: ListTile(
+                      leading: IconButton(
+                        icon: Icon(
+                          Icons.doorbell_rounded,
+                          size: 35
+                        ),
+                        color: Colors.white,
+                        onPressed: () {
+                          print("pressed");
+                        },
+                      ),
+                      title: Text(
+                        widget.groupStuff[index]['group name'].toString(),
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 0, 0, 0)
+                        )
+                      ),
                     ),
                   ),
                 ),
