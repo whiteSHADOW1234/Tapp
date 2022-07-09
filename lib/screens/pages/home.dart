@@ -6,9 +6,9 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:tapp/models/bus.dart';
 import 'package:tapp/models/user.dart';
-import 'package:tapp/screens/subpages/FavoriteScreen.dart';
+// import 'package:tapp/screens/subpages/FavoriteScreen.dart';
 import 'package:tapp/screens/subpages/bus_result.dart';
-import 'package:tapp/screens/subpages/createbusgroup.dart';
+// import 'package:tapp/screens/subpages/createbusgroup.dart';
 import 'package:tapp/screens/subpages/groupPage.dart';
 import 'package:tapp/services/database.dart';
 
@@ -199,7 +199,7 @@ class _HomeState extends State<Home> {
                                 // physics: ScrollPhysics(),
                                 children: const [
                                   Center(
-                                    child: Text("Searching..."),
+                                    child: Text("Searching...\n"),
                                   ),
                                 ],
                               );
@@ -218,7 +218,7 @@ class _HomeState extends State<Home> {
                                       trailing: Text(doc.get('City')),
                                     ),
                                     onTap: (){
-                                      addSearchTerm(doc.get('Bus_name')+'   ('+doc.get('Way')+')');
+                                      addSearchTerm(doc.get('Bus_name'));
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -292,6 +292,7 @@ class BackGroundView extends StatelessWidget {
           ),
         ),
       ),
+      // body: Text(user.uid),
       body: FutureBuilder<dynamic>(
         future: DatabaseService(uid: user.uid).getGroupList(),
         builder: (context, snapshot) {
@@ -427,10 +428,10 @@ class GroupCard extends StatefulWidget {
   @override
   State<GroupCard> createState() => _GroupCardState();
 }
-
 class _GroupCardState extends State<GroupCard> {
   @override
   Widget build(BuildContext context) {
+    int allIndex = widget.groupStuff.length;
     User1 user = Provider.of<User1>(context);
     return ListView.builder(
       scrollDirection: Axis.vertical,
@@ -446,6 +447,8 @@ class _GroupCardState extends State<GroupCard> {
                 MaterialPageRoute(
                   builder: (context) => GroupPage(
                     groupStuff: widget.groupStuff[index],
+                    index: index,
+                    allIndex: allIndex,
                   ),
                 ),
               );

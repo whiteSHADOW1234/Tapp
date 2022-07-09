@@ -273,7 +273,7 @@ class _MyListButtonState extends State<MyListButton> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text("Groups"),
+                      title: const Text("Your Groups"),
                       content: GroupList(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1)),
                       actions: <Widget>[
                         IconButton(
@@ -297,6 +297,7 @@ class _MyListButtonState extends State<MyListButton> {
                                     TextButton(
                                       child: const Text("Cancel"),
                                       onPressed: () {
+                                        
                                         Navigator.of(context).pop();
                                       },
                                     ),
@@ -316,7 +317,7 @@ class _MyListButtonState extends State<MyListButton> {
                         TextButton(
                           child: const Text("Cancel"),
                           onPressed: () {
-                            pressAttention = !pressAttention;
+                            setState(() {pressAttention = !pressAttention;});
                             Navigator.of(context).pop();
                           },
                         ),
