@@ -297,7 +297,6 @@ class _MyListButtonState extends State<MyListButton> {
                                     TextButton(
                                       child: const Text("Cancel"),
                                       onPressed: () {
-                                        
                                         Navigator.of(context).pop();
                                       },
                                     ),

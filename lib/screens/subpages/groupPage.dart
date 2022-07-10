@@ -42,12 +42,12 @@ class _GroupPageState extends State<GroupPage> {
                 Navigator.pop(context);
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.restart_alt_outlined),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.restart_alt_outlined),
+            //   onPressed: () {
+            //     Navigator.pop(context);
+            //   },
+            // ),
             IconButton(
               icon: const Icon(Icons.start),
               onPressed: () {
@@ -86,8 +86,34 @@ class _GroupPageState extends State<GroupPage> {
               icon: const Icon(Icons.delete),
               onPressed: () {
                 setState(() {
-                  DatabaseService(uid: user.uid).deleteGroup(widget.index,  widget.allgroupData);
-                  Navigator.pop(context);
+                  // DatabaseService(uid: user.uid).deleteGroup(widget.index,  widget.allgroupData);
+                  // Navigator.pop(context);
+                  // Navigator.of(context).pop();
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Delete this group?'),
+                      content: Text('If you delete it, you will not be able to see it again.'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Yep~'),
+                          onPressed: () {
+                            DatabaseService(uid: user.uid).deleteGroup(widget.index, widget.allgroupData);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
                 });
               },
             ),

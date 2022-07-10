@@ -90,8 +90,8 @@ class DatabaseService {
   }
   void deleteGroup(int index,  List allgroupData) {
     // final temp ;
-    // print(allgroupData);
-    // print(allgroupData.removeAt(index));
+    print(allgroupData);
+    print(allgroupData.removeAt(index));
     tappCollection.doc(uid).update({
           'Group Stuff': {},
     });
@@ -99,9 +99,9 @@ class DatabaseService {
       tappCollection.doc(uid).update({
           'Group Stuff.$i': allgroupData[i],
       });
-      // print(allgroupData[i]);
+      print(allgroupData[i]);
     }
-    // print(allgroupData);
+    print(allgroupData);
   }
 }
 

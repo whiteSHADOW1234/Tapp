@@ -317,104 +317,6 @@ class BackGroundView extends StatelessWidget {
           );
         },
       ),
-
-
-      //  Builder(
-      //    builder: (context){
-      //         return Center(
-      //           child: Column(
-      //             children: [
-
-                    // InkWell(
-                    //   onTap: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => FavoritePage(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(top: 10.0),
-                    //     child: Center(
-                    //       child: Card(
-                    //         child: Container(
-                    //           margin: EdgeInsets.all(10),
-                    //           height: 100,
-                    //           width: 450,
-                    //           decoration: BoxDecoration(
-                    //             image: DecorationImage(
-                    //               image: AssetImage("asset/mount.jpg"),
-                    //               fit: BoxFit.fitWidth,
-                    //             ),
-                    //           ),
-                    //           child: Center(
-                    //             child: Text(
-                    //               titleRunesMessage,
-                    //               style: TextStyle(
-                    //                   fontSize: 20,
-                    //                   fontWeight: FontWeight.bold,
-                    //                   color: Color.fromARGB(255, 0, 0, 0)
-                    //               )
-                    //             ),
-                    //           ),
-                    //         ),
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(10.0),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    
-                    // InkWell(
-                    //   onTap: () {
-                    //     //change to favorite screen 
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => CreateGroupPage(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(top: 10.0),
-                    //     child: Center(
-                    //       child: Card(
-                    //         child: Container(
-                    //           margin: EdgeInsets.all(10),
-                    //           height: 100,
-                    //           width: 450,
-                    //           decoration: BoxDecoration(
-                    //             image: DecorationImage(
-                    //               image: AssetImage("asset/sunrise.jpg"),
-                    //               fit: BoxFit.fitWidth,
-                    //             ),
-                    //           ),
-                    //           child: Center(
-                    //             child: Text(
-                    //               grouptitleMessage,
-                    //               style: TextStyle(
-                    //                   fontSize: 20,
-                    //                   fontWeight: FontWeight.bold,
-                    //                   color: Color.fromARGB(255, 0, 0, 0)
-                    //               )
-                    //             ),
-                    //           ),
-                    //         ),
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(10.0),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                  
-      //             ],
-      //             )
-      //         );
-      //    }
-      //  )
     );
   }
 
@@ -442,17 +344,19 @@ class _GroupCardState extends State<GroupCard> {
           padding: const EdgeInsets.all(8.0),
           child: InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GroupPage(
-                    allgroupData: widget.groupStuff,
-                    groupStuff: widget.groupStuff[index],
-                    index: index,
-                    allIndex: allIndex,
+              setState(() {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GroupPage(
+                      allgroupData: widget.groupStuff,
+                      groupStuff: widget.groupStuff[index],
+                      index: index,
+                      allIndex: allIndex,
+                    ),
                   ),
-                ),
-              );
+                );
+              });
             },
             child: Container(
               child: Card(
@@ -466,10 +370,6 @@ class _GroupCardState extends State<GroupCard> {
                       begin: Alignment.bottomRight,
                       end: Alignment.topLeft,
                     ),
-                    // image: DecorationImage(
-                    //   image: AssetImage("asset/mount.jpg"),
-                    //   fit: BoxFit.fitWidth,
-                    // ),
                   ),
                   child: Center(
                     child: ListTile(
@@ -503,6 +403,5 @@ class _GroupCardState extends State<GroupCard> {
         );
       },
     );
-    
   }
 }
