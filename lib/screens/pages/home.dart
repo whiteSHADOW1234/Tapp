@@ -446,6 +446,7 @@ class _GroupCardState extends State<GroupCard> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => GroupPage(
+                    allgroupData: widget.groupStuff,
                     groupStuff: widget.groupStuff[index],
                     index: index,
                     allIndex: allIndex,

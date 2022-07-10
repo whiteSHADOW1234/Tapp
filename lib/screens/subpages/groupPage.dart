@@ -4,12 +4,13 @@ import 'package:tapp/models/user.dart';
 import 'package:tapp/services/database.dart';
 
 class GroupPage extends StatefulWidget {
-  var groupStuff;
+  dynamic groupStuff;
   int index;
   int allIndex;
+  List allgroupData;
 
 
-  GroupPage({Key? key, required this.groupStuff, required this.index, required this.allIndex}) : super(key: key);
+  GroupPage({Key? key, required this.groupStuff, required this.index, required this.allIndex, required this.allgroupData}) : super(key: key);
   
   
 
@@ -84,8 +85,10 @@ class _GroupPageState extends State<GroupPage> {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
-                DatabaseService(uid: user.uid).deleteGroup(widget.index, widget.allIndex);
-                Navigator.pop(context);
+                setState(() {
+                  DatabaseService(uid: user.uid).deleteGroup(widget.index,  widget.allgroupData);
+                  Navigator.pop(context);
+                });
               },
             ),
             IconButton(

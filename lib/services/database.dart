@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:tapp/models/bus.dart';
 import 'package:tapp/models/favorite_bus.dart';
-// import 'package:tapp/models/tapper.dart';
 
 class DatabaseService {
 
   final String uid;
   DatabaseService({ required this.uid });
-
 
   final CollectionReference tappCollection = FirebaseFirestore.instance.collection('tappers');
 
@@ -17,14 +14,12 @@ class DatabaseService {
       'user_account_name': userAccountName,
       'user_email': userEmail,
       'user_password': userPassword,
-      'Group Stuff':{'0':{'group name': "Create a Group", 'elements': [""]}},
-      // 'FavoriteBus': [],
+      'Group Stuff':{'0':{'group name': "怎麼創建群組", 'elements': [""]}},
     });
   }
 
 
   Future<List<dynamic>> getBusList() async {
-
   return tappCollection.get().then((QuerySnapshot snapshot) {
     if (snapshot.docs.isNotEmpty) {
       return snapshot.docs.map((DocumentSnapshot doc) {
@@ -47,16 +42,6 @@ class DatabaseService {
         return [];
       }
     });
-  
-  // return FirebaseFirestore.instance.collection('tappers').get().then((QuerySnapshot snapshot) {
-  //   if (snapshot.docs.isNotEmpty) {
-  //     return snapshot.docs.map((DocumentSnapshot doc) {
-  //       return doc.data();
-  //     }).toList();
-  //   } else {
-  //     return [];
-  //   }
-  //   });
   }
 
 
@@ -103,48 +88,20 @@ class DatabaseService {
       'Group Stuff.$index': {'elements' : [busName + " " + city + " " + substring], 'group name' : groupName}
     },);
   }
-
-  void deleteGroup(int index, int allindex) {
-    // String changeIndex1 = index.toString();
-    // String changeIndex2 = (index+1).toString();
-    // String title = "123";
-    // tappCollection.doc(uid).set({
-    //       'Group Stuff.$changeIndex1': {'elements' : ['Group Stuff.$changeIndex2.elements'], 'group name' : title},
-    // },);
-
-
-    // for (int i = allindex-1; i > int.parse(index); i--) {
-    //   if (i == int.parse(index)){
-    //     tappCollection.doc(uid).update({
-    //       'Group Stuff.$i': 'Group Stuff.$i'
-    //     },);
-    //   }
-    // }
+  void deleteGroup(int index,  List allgroupData) {
+    // final temp ;
+    // print(allgroupData);
+    // print(allgroupData.removeAt(index));
+    tappCollection.doc(uid).update({
+          'Group Stuff': {},
+    });
+    for (int i = 0; i < allgroupData.length; i++) {
+      tappCollection.doc(uid).update({
+          'Group Stuff.$i': allgroupData[i],
+      });
+      // print(allgroupData[i]);
+    }
+    // print(allgroupData);
   }
-
-
-
-
-
-
-
-
-
-// tapp list from snapshot
-// List <Tapp> _tappListFromSnapshot(QuerySnapshot snapshot){
-//      return snapshot.docs.map((doc){
-//        return Tapp(
-//          user_account_name: doc.get('user_account_name') ?? '',
-//          user_password: doc.get('user_password') ?? '0',
-//        );
-//      }).toList();
-//   }
-
-  // get tapps stream
-  // Stream<List<Tapp>> get tapps {
-  //   return tappCollection.snapshots()
-  //     .map(_tappListFromSnapshot);
-  // }
-
 }
 
