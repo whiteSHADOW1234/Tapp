@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tapp/models/favorite_bus.dart';
 
+String createGroupText = String.fromCharCodes(Runes('\u600E' '\u9EBC' '\u5275' '\u5EFA' '\u7FA4' '\u7D44'));
+
 class DatabaseService {
 
   final String uid;
@@ -14,7 +16,7 @@ class DatabaseService {
       'user_account_name': userAccountName,
       'user_email': userEmail,
       'user_password': userPassword,
-      'Group Stuff':{'0':{'group name': "怎麼創建群組", 'elements': [""]}},
+      'Group Stuff':{'0':{'group name': createGroupText, 'elements': [""]}},
     });
   }
 

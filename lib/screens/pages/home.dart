@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:tapp/models/bus.dart';
@@ -197,9 +198,13 @@ class _HomeState extends State<Home> {
                                 // scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 // physics: ScrollPhysics(),
-                                children: const [
+                                children: [
                                   Center(
-                                    child: Text("Searching...\n"),
+                                    // child: Text("Searching...\n"),
+                                    child: LoadingAnimationWidget.staggeredDotsWave(
+                                      color: Color.fromARGB(255, 0, 140, 255),
+                                      size: 25,
+                                    ),
                                   ),
                                 ],
                               );
@@ -297,7 +302,7 @@ class BackGroundView extends StatelessWidget {
         future: DatabaseService(uid: user.uid).getGroupList(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

@@ -55,7 +55,7 @@ class BusApiService {
       for (var i = 0; i < jsonData.length; i++){
         if (jsonData[i]['Direction']  == 0){
           print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
-          goTimeData.add(jsonData[i]['StopName']['Zh_tw']+"///"+jsonData[i]['EstimateTime'].toString());
+          goTimeData.add(jsonData[i]['StopName']['Zh_tw']+"//"+jsonData[i]['EstimateTime'].toString());
         }else{
           print(jsonData[i]['StopName']['Zh_tw']+" "+jsonData[i]['EstimateTime'].toString());
           backTimeData.add(jsonData[i]['StopName']['Zh_tw']+"///"+ jsonData[i]['EstimateTime'].toString());
@@ -104,8 +104,8 @@ class BusApiService {
 
     for(var i = 0; i < goStopNameData.length; i++){
       for (var j = 0; j < goTimeData.length; j++){
-        if (goTimeData[j].split("///")[0] == goStopNameData[i]){
-          goData.add("${goStopNameData[i]} /// ${goTimeData[j].split("///")[1]}");
+        if (goTimeData[j].split("//")[0] == goStopNameData[i]){
+          goData.add("${goStopNameData[i]} --// ${goTimeData[j].split("//")[1]}");
           break;
         }
       }
@@ -203,7 +203,7 @@ class _BusPageState extends State<BusPage>  with AutomaticKeepAliveClientMixin<B
               goData.isEmpty ? const Center(child: Text('No Data')) : ListView.builder(
                 itemCount: goData.length,
                 itemBuilder: (context, index) {
-                  var dataAim = goData[index].indexOf("///");
+                  var dataAim = goData[index].indexOf("//");
                   return MyListButton(busName: widget.bus_name, city: widget.city, title: goData[index],seperate: dataAim);
                 },
               ),
@@ -274,7 +274,7 @@ class _MyListButtonState extends State<MyListButton> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text("Your Groups"),
-                      content: GroupList(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1)),
+                      content: GroupList(busName: widget.busName, city: widget.city, title: widget.title.substring(0, widget.seperate+1),),
                       actions: <Widget>[
                         IconButton(
                           icon: const Icon(Icons.add),
