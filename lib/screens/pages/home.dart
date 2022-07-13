@@ -1,7 +1,10 @@
 import 'dart:collection';
-
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
@@ -385,6 +388,17 @@ class _GroupCardState extends State<GroupCard> {
                         ),
                         color: Colors.white,
                         onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationWidget(
+                                allgroupData: widget.groupStuff,
+                                groupStuff: widget.groupStuff[index],
+                                index: index,
+                                allIndex: allIndex,
+                              ),
+                            ),
+                          );
                           print("pressed");
                         },
                       ),
@@ -408,5 +422,140 @@ class _GroupCardState extends State<GroupCard> {
         );
       },
     );
+  }
+}
+
+class NotificationWidget extends StatefulWidget {
+  dynamic groupStuff;
+  int index;
+  int allIndex;
+  List allgroupData;
+  NotificationWidget({Key? key, required this.groupStuff, required this.index, required this.allIndex, required this.allgroupData}) : super(key: key);
+
+  @override
+  State<NotificationWidget> createState() => _NotificationWidgetState();
+}
+
+class _NotificationWidgetState extends State<NotificationWidget> {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  @override
+  initState() {
+    super.initState();
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project   
+     // If you have skipped STEP 3 then change app_icon to @mipmap/ic_launcher
+    var initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher'); 
+    var initializationSettingsIOS = const IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String? payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
+      },
+    );
+  }
+
+  
+  
+  Future showDailyNotificationWithoutSound(String textstring, int id) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'your channel id', 
+        'your channel name', 
+        channelDescription: 'your channel description',
+        playSound: false, 
+        importance: Importance.max, 
+        priority: Priority.high
+    );
+    var iOSPlatformChannelSpecifics = const IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics, 
+        iOS: iOSPlatformChannelSpecifics
+    );
+
+
+    String firstString = textstring.split(' ')[0];
+    String secondString = textstring.split(' ')[1];
+    String thirdString = textstring.split(' ')[2];
+
+    print(firstString);
+    print(secondString);
+    print(thirdString);
+
+
+    if(textstring.indexOf('--/') != -1){
+      timeText = await BusInformation(busname: firstString, city: secondString, stopname: thirdString).getGoTime();
+      try{
+        timeText = (int.parse(timeText)/60).toString()+' min';
+      } catch(e) {
+        timeText = 'No Data';
+      }
+    } else {
+      timeText = await BusInformation(busname: firstString, city: secondString, stopname: thirdString).getBackTime();
+      try{
+        timeText = (int.parse(timeText)/60).toString()+' min';
+      } catch(e) {
+        timeText = 'No Data';
+      }
+    }
+
+
+    tz.initializeTimeZones();
+    final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      '$firstString  ($secondString)',
+      '$thirdString' + "     " + timeText,
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 60)),
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 
+              'your channel name',
+              channelDescription: 'your channel description')
+          , iOS: IOSNotificationDetails()
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Notification'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              child: Text('Show Notification'),
+              onPressed: () async {
+                for (var i = 0; i < widget.groupStuff['elements'].length; i++) {
+                  await showDailyNotificationWithoutSound(widget.groupStuff['elements'][i].toString(),i);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+    
   }
 }

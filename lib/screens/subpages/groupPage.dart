@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:tapp/models/user.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 // import 'package:tapp/screens/subpages/bus_result.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tapp/services/database.dart';
+
 
 String timeText = "No Data yet...";
 
@@ -23,7 +27,7 @@ class GroupPage extends StatefulWidget {
   
 
   @override
-  State<GroupPage> createState() => _GroupPageState();
+  State<GroupPage> createState() => GroupPageState();
 }
 
 
@@ -38,7 +42,7 @@ String displayText = String.fromCharCodes(
     );
 
 
-class _GroupPageState extends State<GroupPage> {
+class GroupPageState extends State<GroupPage> {
     late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
@@ -154,7 +158,7 @@ class _GroupPageState extends State<GroupPage> {
               icon: const Icon(Icons.start),
               onPressed: () {
                 for (var i = 0; i < widget.groupStuff['elements'].length; i++) {
-                  _showNotificationWithoutSound(widget.groupStuff['elements'][i].toString(),i);
+                  showNotificationWithoutSound(widget.groupStuff['elements'][i].toString(),i);
                 }
                 Navigator.pop(context);
               },
@@ -206,7 +210,8 @@ class _GroupPageState extends State<GroupPage> {
     );
   }
   
-  Future _showNotificationWithoutSound(String textstring, int id) async {
+
+  Future showNotificationWithoutSound(String textstring, int id) async {
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         'your channel id', 
         'your channel name', 
@@ -247,6 +252,32 @@ class _GroupPageState extends State<GroupPage> {
       }
     }
 
+
+    // tz.initializeTimeZones();
+    // final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+
+    // tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+
+    // await flutterLocalNotificationsPlugin.zonedSchedule(
+    //   id,
+    //   '$firstString  ($secondString)',
+    //   '$thirdString' + "     " + timeText,
+    //   tz.TZDateTime.now(tz.local).add(const Duration(seconds: 60)),
+    //   const NotificationDetails(
+    //       android: AndroidNotificationDetails(
+    //           'your channel id', 
+    //           'your channel name',
+    //           channelDescription: 'your channel description')
+    //       , iOS: IOSNotificationDetails()
+    //   ),
+    //   androidAllowWhileIdle: true,
+    //   uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    // );
+
+
+
+
     
     
     await flutterLocalNotificationsPlugin.show(
@@ -257,6 +288,133 @@ class _GroupPageState extends State<GroupPage> {
       payload: 'No_Sound',
     );
   }
+
+
+  
+  Future showrepeatNotificationWithoutSound(String textstring, int id) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'your channel id', 
+        'your channel name', 
+        channelDescription: 'your channel description',
+        playSound: false, 
+        importance: Importance.max, 
+        priority: Priority.high,
+        timeoutAfter: 5000,
+        enableLights: true
+    );
+    var iOSPlatformChannelSpecifics = const IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics, 
+        iOS: iOSPlatformChannelSpecifics
+    );
+
+
+    String firstString = textstring.split(' ')[0];
+    String secondString = textstring.split(' ')[1];
+    String thirdString = textstring.split(' ')[2];
+
+    print(firstString);
+    print(secondString);
+    print(thirdString);
+
+
+    if(textstring.indexOf('--/') != -1){
+      timeText = await BusInformation(busname: firstString, city: secondString, stopname: thirdString).getGoTime();
+      try{
+        timeText = (int.parse(timeText)/60).toString()+' min';
+      } catch(e) {
+        timeText = 'No Data';
+      }
+    } else {
+      timeText = await BusInformation(busname: firstString, city: secondString, stopname: thirdString).getBackTime();
+      try{
+        timeText = (int.parse(timeText)/60).toString()+' min';
+      } catch(e) {
+        timeText = 'No Data';
+      }
+    }
+
+    await flutterLocalNotificationsPlugin.periodicallyShow(
+      id,
+      '$firstString  ($secondString)',
+      '$thirdString' + "     " + timeText,
+      RepeatInterval.everyMinute,
+      platformChannelSpecifics,
+      payload: 'No_Sound',
+    );
+  }
+
+
+
+  
+  Future showDailyNotificationWithoutSound(String textstring, int id) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'your channel id', 
+        'your channel name', 
+        channelDescription: 'your channel description',
+        playSound: false, 
+        importance: Importance.max, 
+        priority: Priority.high
+    );
+    var iOSPlatformChannelSpecifics = const IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics, 
+        iOS: iOSPlatformChannelSpecifics
+    );
+
+
+    String firstString = textstring.split(' ')[0];
+    String secondString = textstring.split(' ')[1];
+    String thirdString = textstring.split(' ')[2];
+
+    print(firstString);
+    print(secondString);
+    print(thirdString);
+
+
+    if(textstring.indexOf('--/') != -1){
+      timeText = await BusInformation(busname: firstString, city: secondString, stopname: thirdString).getGoTime();
+      try{
+        timeText = (int.parse(timeText)/60).toString()+' min';
+      } catch(e) {
+        timeText = 'No Data';
+      }
+    } else {
+      timeText = await BusInformation(busname: firstString, city: secondString, stopname: thirdString).getBackTime();
+      try{
+        timeText = (int.parse(timeText)/60).toString()+' min';
+      } catch(e) {
+        timeText = 'No Data';
+      }
+    }
+
+
+    tz.initializeTimeZones();
+    final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      '$firstString  ($secondString)',
+      '$thirdString' + "     " + timeText,
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 60)),
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 
+              'your channel name',
+              channelDescription: 'your channel description')
+          , iOS: IOSNotificationDetails()
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    );
+  }
+
+
+
+
 
 }
 
